@@ -22,10 +22,9 @@ const useLogin = () => {
     onSuccess: (data) => {
       onAuthSuccess(data.userWithoutPassword, data.token);
       toast.success(data.message || "Login successful");
-      // router.push("/");
+      router.push("/");
     },
     onError: (error: AxiosError<{ message: string; code: number }>) => {
-      console.log(error);
       toast.error(error.response?.data.message || "Something went wrong");
     },
   });

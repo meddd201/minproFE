@@ -4,6 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "../../../../stores/auth";
+import { toast } from "sonner";
 
 const useLogin = () => {
   const router = useRouter();
@@ -20,11 +21,12 @@ const useLogin = () => {
     },
     onSuccess: (data) => {
       onAuthSuccess(data.userWithoutPassword, data.token);
-      alert("User logged in successfully");
-      router.push("/");
+      toast.success(data.message || "Login successful");
+      // router.push("/");
     },
     onError: (error: AxiosError<{ message: string; code: number }>) => {
-      alert(error.response?.data.message);
+      console.log(error);
+      toast.error(error.response?.data.message || "Something went wrong");
     },
   });
 };

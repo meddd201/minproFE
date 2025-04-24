@@ -9,12 +9,16 @@ import { cn } from "@/lib/utils";
 import { useFormik } from "formik";
 import { LoginValidationSchema } from "./schema";
 import { WEB_NAME } from "@/config/env";
+import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
   const { mutateAsync: login, isPending } = useLogin();
+  const [showPassword, setShowPassword] = useState(false);
+
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -32,7 +36,7 @@ export default function LoginForm({
         <CardContent className="grid p-0 md:grid-cols-2">
           <div className="bg-muted relative hidden md:block">
             <img
-              src="/cuteshine19_01.jpg"
+              src="/login/ornament.png"
               alt="Image"
               className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
             />
@@ -42,7 +46,7 @@ export default function LoginForm({
               <div className="flex flex-col items-center text-center">
                 <h1 className="text-2xl font-bold">Welcome back</h1>
                 <p className="text-muted-foreground text-balance">
-                  Login to your { `${WEB_NAME}`} account
+                  Login to your {`${WEB_NAME}`} account
                 </p>
               </div>
 
@@ -64,26 +68,44 @@ export default function LoginForm({
                 )}
               </div>
 
-              <div className="relative grid gap-2">
-                <div className="flex items-center">
+              <div className="relative grid gap-2 pb-3">
+                <div className="flex items-center justify-between">
                   <Label htmlFor="password">Password</Label>
                 </div>
-                <Input
-                  name="password"
-                  value={formik.values.password}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  id="password"
-                  type="password"
-                />
+                <div className="relative">
+                  <Input
+                    name="password"
+                    value={formik.values.password}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="********"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-sm"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </button>
+                </div>
                 {!!formik.touched.password && !!formik.errors.password && (
-                  <span className="text-destructive absolute top-full text-sm">
+                  <span className="text-destructive absolute top-[80%] text-sm">
                     {formik.errors.password}
                   </span>
                 )}
               </div>
 
-              <Button disabled={isPending } type="submit" className="w-full">
+              <Button
+                disabled={isPending}
+                type="submit"
+                className="w-full hover:border-3 hover:border-black hover:bg-amber-500 hover:text-2xl hover:text-black"
+              >
                 {isPending ? "loading..." : "Submit"}
               </Button>
               <div className="text-center text-sm">

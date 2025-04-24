@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import useGetSample from "@/hook/sample/useGetSample";
+import useGetSample from "@/hooks/sample/useGetSample";
 import SampleComponent from "./_component/sampleComponent";
 
 export default function Sample() {

@@ -1,22 +1,35 @@
 {
     "workbench.colorCustomizations": {
-        "activityBar.activeBackground": "#438536",
-        "activityBar.background": "#438536",
-        "activityBar.foreground": "#e7e7e7",
-        "activityBar.inactiveForeground": "#e7e7e799",
-        "activityBarBadge.background": "#a4adda",
+        "activityBar.activeBackground": "#ffffff",
+        "activityBar.background": "#ffffff",
+        "activityBar.foreground": "#15202b",
+        "activityBar.inactiveForeground": "#15202b99",
+        "activityBarBadge.background": "#df9f9f",
         "activityBarBadge.foreground": "#15202b",
-        "commandCenter.border": "#e7e7e799",
-        "sash.hoverBorder": "#438536",
-        "statusBar.background": "#316127",
-        "statusBar.foreground": "#e7e7e7",
-        "statusBarItem.hoverBackground": "#438536",
-        "statusBarItem.remoteBackground": "#316127",
-        "statusBarItem.remoteForeground": "#e7e7e7",
-        "titleBar.activeBackground": "#316127",
-        "titleBar.activeForeground": "#e7e7e7",
-        "titleBar.inactiveBackground": "#31612799",
-        "titleBar.inactiveForeground": "#e7e7e799"
+        "commandCenter.border": "#15202b99",
+        "sash.hoverBorder": "#ffffff",
+        "statusBar.background": "#ffffff",
+        "statusBar.foreground": "#15202b",
+        "statusBarItem.hoverBackground": "#e6e6e6",
+        "statusBarItem.remoteBackground": "#ffffff",
+        "statusBarItem.remoteForeground": "#15202b",
+        "titleBar.activeBackground": "#ffffff",
+        "titleBar.activeForeground": "#15202b",
+        "titleBar.inactiveBackground": "#ffffff99",
+        "titleBar.inactiveForeground": "#15202b99"
     },
-    "peacock.color": "#316127"
+    "peacock.color": "#ffffff",
+    "files.exclude": {
+        "tsconfig.json": true,
+        "postcss.config.mjs": true,
+        "package.json": true,
+        "package-lock.json": true,
+        "next.config.ts": true,
+        "next-env.d.ts": true,
+        "components.json": true,
+        ".prettierrc": true,
+        ".vscode": true,
+        "node_modules": true,
+        ".next": true
+    }
 }

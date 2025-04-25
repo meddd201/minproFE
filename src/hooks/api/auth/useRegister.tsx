@@ -6,17 +6,17 @@ import { useRouter } from "next/navigation";
 import { useAuthStore } from "../../../../stores/auth";
 import { toast } from "sonner";
 
-const useLogin = () => {
+const useRegister = () => {
   const router = useRouter();
   const { onAuthSuccess } = useAuthStore();
   return useMutation({
-    mutationFn: async (payload: Pick<User, "email" | "password">) => {
-      const { data } = await axiosInstance.post(`/auth/login`, payload);
+    mutationFn: async (payload: Omit<User, "id">) => {
+      const { data } = await axiosInstance.post(`/auth/register`, payload);
       return data;
     },
     onSuccess: (data) => {
       onAuthSuccess(data.user, data.token);
-      toast.success(data.message || "Login successful");
+      toast.success(data.message || "Registration successful");
       router.push("/");
     },
     onError: (error: AxiosError<{ message: string; code: number }>) => {
@@ -25,4 +25,4 @@ const useLogin = () => {
   });
 };
 
-export default useLogin;
+export default useRegister;

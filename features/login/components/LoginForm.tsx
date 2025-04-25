@@ -11,6 +11,7 @@ import { LoginValidationSchema } from "./schema";
 import { WEB_NAME } from "@/config/env";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import Link from "next/link";
 
 export default function LoginForm({
   className,
@@ -100,19 +101,28 @@ export default function LoginForm({
                   </span>
                 )}
               </div>
-
-              <Button
-                disabled={isPending}
-                type="submit"
-                className="w-full hover:border-3 hover:border-black hover:bg-amber-500 hover:text-2xl hover:text-black"
-              >
-                {isPending ? "loading..." : "Submit"}
-              </Button>
+              <div className="flex flex-col gap-1"> 
+                <Button
+                  disabled={isPending}
+                  type="submit"
+                  className="w-full hover:border-3 hover:border-black hover:bg-amber-500 hover:text-2xl hover:text-black"
+                >
+                  {isPending ? "loading..." : "Submit"}
+                </Button>
+                <div className="text-end text-sm">
+                  <Link
+                    href="/forgot-password"
+                    className="hover:underline underline-offset-4"
+                  >
+                    Forgot Password?
+                  </Link>
+                </div>
+              </div>
               <div className="text-center text-sm">
                 Don&apos;t have an account?{" "}
-                <a href="/register" className="underline underline-offset-4">
+                <Link href="/register" className="hover:underline underline-offset-4">
                   Register
-                </a>
+                </Link>
               </div>
             </div>
           </form>

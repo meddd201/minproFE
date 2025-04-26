@@ -20,19 +20,19 @@
     },
     "peacock.color": "#ffffff",
     "files.exclude": {
-        "tsconfig.json": true,
-        "postcss.config.mjs": true,
-        "package.json": true,
-        "package-lock.json": true,
-        "next.config.ts": true,
-        "next-env.d.ts": true,
-        "components.json": true,
-        ".prettierrc": true,
-        ".vscode": true,
-        "node_modules": true,
-        ".next": true,
+        "tsconfig.json": false,
+        "postcss.config.mjs": false,
+        "package.json": false,
+        "package-lock.json": false,
+        "next.config.ts": false,
+        "next-env.d.ts": false,
+        "components.json": false,
+        ".prettierrc": false,
+        ".vscode": false,
+        "node_modules": false,
+        ".next": false,
         "public": false,
-        ".gitignore": true,
-        ".env": true
+        ".gitignore": false,
+        ".env": false
     }
 }

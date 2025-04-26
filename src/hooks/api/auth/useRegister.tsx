@@ -10,7 +10,7 @@ const useRegister = () => {
   const router = useRouter();
   const { onAuthSuccess } = useAuthStore();
   return useMutation({
-    mutationFn: async (payload: Omit<User, "id">) => {
+    mutationFn: async (payload: Omit<User, "id" | "profilePict" | "role">) => {
       const { data } = await axiosInstance.post(`/auth/register`, payload);
       return data;
     },

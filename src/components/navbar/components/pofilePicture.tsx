@@ -44,7 +44,13 @@ const PofilePicture = () => {
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>Profile</DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  router.push("/profile");
+                }}
+              >
+                Profile
+              </DropdownMenuItem>
               <DropdownMenuItem>My Ticket</DropdownMenuItem>
               <DropdownMenuItem>Transaction</DropdownMenuItem>
             </DropdownMenuGroup>
@@ -64,7 +70,7 @@ const PofilePicture = () => {
     );
   } else {
     return (
-      <div className=" hidden items-center gap-2 text-black md:grid md:grid-cols-2">
+      <div className="hidden items-center gap-2 text-black md:grid md:grid-cols-2">
         <Button
           className="hover:border-3 hover:border-black hover:bg-amber-500 hover:text-2xl hover:text-black"
           type="button"

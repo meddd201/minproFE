@@ -3,7 +3,7 @@ import { User } from "@/types/user";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
-import { useAuthStore } from "../../../../stores/auth";
+import { useAuthStore } from "../../../stores/auth";
 import { toast } from "sonner";
 
 const useProfilePicture = () => {

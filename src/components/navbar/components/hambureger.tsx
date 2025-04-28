@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { useAuthStore } from "../../../../stores/auth";
+import { useAuthStore } from "../../../stores/auth";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ShoppingCart } from "lucide-react";

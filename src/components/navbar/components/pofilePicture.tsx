@@ -13,7 +13,7 @@ import { ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useAuthStore } from "../../../../stores/auth";
+import { useAuthStore } from "../../../stores/auth";
 
 const PofilePicture = () => {
   const router = useRouter();

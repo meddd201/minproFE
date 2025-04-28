@@ -3,14 +3,16 @@ import { User } from "@/types/user";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
-import { useAuthStore } from "../../../../stores/auth";
+import { useAuthStore } from "../../../stores/auth";
 import { toast } from "sonner";
 
 const useRegister = () => {
   const router = useRouter();
   const { onAuthSuccess } = useAuthStore();
   return useMutation({
-    mutationFn: async (payload: Omit<User, "id" | "profilePict" | "role">) => {
+    mutationFn: async (
+      payload: Omit<User, "id" | "profilePict" | "role" | "referralCode">,
+    ) => {
       const { data } = await axiosInstance.post(`/auth/register`, payload);
       return data;
     },

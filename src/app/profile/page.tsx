@@ -1,4 +1,4 @@
-import ProfilePage from "../../../features/pofile";
+import ProfilePage from "../features/pofile";
 
 const Profile = () => {
   return <ProfilePage />;

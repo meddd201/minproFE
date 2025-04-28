@@ -1,29 +1,31 @@
-import { axiosInstance } from "@/lib/axios";
+import useAxios from "@/hooks/useAxios";
 import { useState } from "react";
 import { toast } from "sonner";
 
-const useValidateRefferal = () => {
+const useValidateOrganizerName = () => {
   const [valid, setValid] = useState<string>("empty");
+  const { axiosInstance } = useAxios();
   const [isPending, setPending] = useState(false);
 
-  const validateRefferal = async (input: string) => {
+  const validateName = async (input: string) => {
     if (input.trim() === "") {
       setValid("empty");
       return;
     }
     setPending(true);
     try {
-      await axiosInstance.post(`/auth/valid-refferal`, { referralCode: input });
+      await axiosInstance.post(`/auth/validate-new-organizer-name`, {
+        name: input,
+      });
       setValid("true");
       setPending(false);
     } catch (error) {
       setValid("false");
       setPending(false);
-      toast.error("Referral code is not valid");
     }
   };
 
-  return { valid, setValid, validateRefferal };
+  return { valid, setValid, validateName };
 };
 
-export default useValidateRefferal;
+export default useValidateOrganizerName;

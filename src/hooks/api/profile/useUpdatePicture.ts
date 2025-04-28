@@ -6,19 +6,15 @@ import { useRouter } from "next/navigation";
 import { useAuthStore } from "../../../stores/auth";
 import { toast } from "sonner";
 
-const useRegister = () => {
+const useProfilePicture = () => {
   const router = useRouter();
-  const { onAuthSuccess } = useAuthStore();
+  const { user } = useAuthStore();
   return useMutation({
-    mutationFn: async (
-      payload: Omit<User, "id" | "profilePict" | "role" | "referralCode">,
-    ) => {
-      const { data } = await axiosInstance.post(`/auth/register`, payload);
+    mutationFn: async (payload: Pick<User, "email" | "password">) => {
+      const { data } = await axiosInstance.post(`/auth/login`, payload);
       return data;
     },
     onSuccess: (data) => {
-      onAuthSuccess(data.user, data.token);
-      toast.success(data.message || "Registration successful");
       router.push("/");
     },
     onError: (error: AxiosError<{ message: string; code: number }>) => {
@@ -27,4 +23,4 @@ const useRegister = () => {
   });
 };
 
-export default useRegister;
+export default useProfilePicture;

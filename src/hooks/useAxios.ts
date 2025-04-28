@@ -2,7 +2,7 @@
 
 import { axiosInstance } from "@/lib/axios";
 import { useEffect } from "react";
-import { useAuthStore } from "../../stores/auth";
+import { useAuthStore } from "../stores/auth";
 
 const useAxios = () => {
   const { accessToken, clearAuth } = useAuthStore();

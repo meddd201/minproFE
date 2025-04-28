@@ -5,4 +5,5 @@ export interface User {
   password: string;
   profilePict: string | null;
   role: string;
+  referralCode: string;
 }

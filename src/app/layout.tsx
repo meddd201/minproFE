@@ -4,6 +4,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import Navbar from "@/components/navbar/navbar";
+import NuqsProvider from "@/providers/NuqsProvider";
+import TokenProvider from "@/providers/TokenProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,13 +30,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased text-black`}
+        className={`${geistSans.variable} ${geistMono.variable} text-black antialiased`}
       >
-        <ReactQueryProvider>
-          <Navbar />
-          {children}
-        </ReactQueryProvider>
-        <Toaster />
+        <NuqsProvider>
+          <ReactQueryProvider>
+            <Navbar />
+            <TokenProvider>
+              {children}
+              <Toaster />
+            </TokenProvider>
+          </ReactQueryProvider>
+        </NuqsProvider>
       </body>
     </html>
   );

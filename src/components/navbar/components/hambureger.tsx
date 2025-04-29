@@ -56,12 +56,7 @@ const Hamburger = () => {
             {!!user ? (
               <div className="mb-4">
                 <div className="relative mx-auto aspect-square w-1/3">
-                  <Image
-                    src={profileSrc}
-                    alt="Profile"
-                    fill
-                    quality={40}
-                  />
+                  <Image src={profileSrc} alt="Profile" fill quality={40} />
                 </div>
                 <p className="text-center text-2xl font-bold text-black">
                   {user?.username}

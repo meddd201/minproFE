@@ -24,9 +24,9 @@ const ProfileCard = () => {
       <strong className="flex justify-between">
         {label} <p>:</p>{" "}
       </strong>
-      <div className="col-span-2 flex justify-between">
+      <div className="col-span-2 flex justify-between ">
         <p>{value || "N/A"}</p>
-        {callback && <Edit onClick={callback} className="text-blue-500" />}
+        {callback && <Edit onClick={callback} className="text-blue-500 hover:cursor-pointer" />}
       </div>
     </div>
   );

@@ -1,26 +1,23 @@
 import useAxios from "@/hooks/useAxios";
+import { useAuthStore } from "@/stores/auth";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
-import { useAuthStore } from "../../../stores/auth";
 
-const useProfilePicture = () => {
+const useUpdateUsername = () => {
   const { user, onUpdateUser } = useAuthStore();
   const { axiosInstance } = useAxios();
   return useMutation({
-    mutationFn: async (profilePict: File) => {
+    mutationFn: async (username: string) => {
+      const { data } = await axiosInstance.patch(`/profile/username`, {
+        username,
+      });
 
-      const formData = new FormData();
-      formData.append("profilePict", profilePict);
-      const { data } = await axiosInstance.patch(
-        `/profile/profile-pict`,
-        formData,
-      );
       return data;
     },
     onSuccess: (data) => {
       onUpdateUser(data.user);
-      toast.success(data.message || "Profile picture updated successfully");
+      toast.success(data.message || "Username updated successfully");
     },
     onError: (error: AxiosError<{ message: string; code: number }>) => {
       toast.error(error.response?.data.message || "Something went wrong");
@@ -28,4 +25,4 @@ const useProfilePicture = () => {
   });
 };
 
-export default useProfilePicture;
+export default useUpdateUsername;

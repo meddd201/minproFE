@@ -54,14 +54,14 @@ const ModalEditName = ({
             <Button
               onClick={onClose}
               type="button"
-              className="grow bg-[#9cdcfe] text-black hover:border-3 hover:border-black hover:bg-amber-500 hover:text-2xl hover:text-black"
+              className="grow bg-[#9cdcfe] hover:cursor-pointer text-black hover:border-3 hover:border-black hover:bg-amber-500 hover:text-2xl hover:text-black"
             >
               Cancel
             </Button>
             <Button
               disabled={formik.errors.username !== undefined}
               type="submit"
-              className="grow hover:border-3 hover:border-black hover:bg-amber-500 hover:text-2xl hover:text-black"
+              className="grow hover:border-3 hover:cursor-pointer hover:border-black hover:bg-amber-500 hover:text-2xl hover:text-black"
             >
               Save
             </Button>

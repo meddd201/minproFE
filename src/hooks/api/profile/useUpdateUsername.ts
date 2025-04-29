@@ -4,23 +4,22 @@ import { AxiosError } from "axios";
 import { signIn, useSession } from "next-auth/react";
 import { toast } from "sonner";
 
-const useProfilePicture = () => {
+const useUpdateUsername = () => {
   const session = useSession();
   const { axiosInstance } = useAxios();
   return useMutation({
-    mutationFn: async (profilePict: File) => {
-      const formData = new FormData();
-      formData.append("profilePict", profilePict);
-      const { data } = await axiosInstance.patch(
-        `/profile/profile-pict`,
-        formData,
-      );
+    mutationFn: async (username: string) => {
+      const { data } = await axiosInstance.patch(`/profile/username`, {
+        username,
+      });
+
       return data;
     },
     onSuccess: async(data) => {
       const datatosSignIn = { ...data.user, accessToken: data.accessToken };
       await signIn("credentials", { ...datatosSignIn, redirect: false });
-      toast.success(data.message || "Profile picture updated successfully");
+
+      toast.success(data.message || "Username updated successfully");
     },
     onError: (error: AxiosError<{ message: string; code: number }>) => {
       toast.error(error.response?.data.message || "Something went wrong");
@@ -28,4 +27,4 @@ const useProfilePicture = () => {
   });
 };
 
-export default useProfilePicture;
+export default useUpdateUsername;

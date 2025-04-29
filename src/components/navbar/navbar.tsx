@@ -2,13 +2,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useAuthStore } from "../../stores/auth";
 import PofilePicture from "./components/pofilePicture";
 import Hamburger from "./components/hambureger";
+import { useSession } from "next-auth/react";
 
 const Navbar = () => {
   const pathname = usePathname();
-  const { user } = useAuthStore();
+  const session = useSession();
+  const user = session?.data?.user;
   if (pathname === "/login") return null;
   if (pathname === "/register") return null;
   if (pathname === "/forgot-password") return null;

@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/sonner";
 import Navbar from "@/components/navbar/navbar";
 import NuqsProvider from "@/providers/NuqsProvider";
 import TokenProvider from "@/providers/TokenProvider";
+import NextAuthProvider from "@/providers/NextAuthProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,13 +34,15 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} text-black antialiased`}
       >
         <NuqsProvider>
-          <ReactQueryProvider>
-            <Navbar />
-            <TokenProvider>
-              {children}
-              <Toaster />
-            </TokenProvider>
-          </ReactQueryProvider>
+          <NextAuthProvider>
+            <ReactQueryProvider>
+              <TokenProvider>
+              <Navbar />
+                {children}
+                <Toaster />
+              </TokenProvider>
+            </ReactQueryProvider>
+          </NextAuthProvider>
         </NuqsProvider>
       </body>
     </html>

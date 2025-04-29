@@ -4,18 +4,18 @@ import TipTapRichTextEditor from "@/components/TiptapRichTextEditor";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useFormik } from "formik";
-import Image from "next/image";
-import { use, useEffect, useRef, useState } from "react";
-import { toast } from "sonner";
-import { CreateBlogSchema } from "../schema";
-import { useDebounce } from "use-debounce";
+import useRegisterOrgaizer from "@/hooks/api/auth/useRegisterOrgaizer";
 import useValidateOrganizerName from "@/hooks/api/auth/useValidateOrganizerName";
+import { useFormik } from "formik";
 import { CircleCheck, CircleX } from "lucide-react";
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
+import { useDebounce } from "use-debounce";
+import { RegisterOrganizerSchema } from "../schema";
 
 const RegisterOrganizerForm = () => {
-  //   const { mutateAsync: createBlog, isPending } = useCreateBlog();
-  const isPending = false;
+  const { mutateAsync: RegisterOrg, isPending } = useRegisterOrgaizer();
 
   const formik = useFormik({
     initialValues: {
@@ -23,12 +23,11 @@ const RegisterOrganizerForm = () => {
       description: "",
       bankTarget: "",
       paymentTarget: "",
-      thumbnail: null,
+      organizerPict: null,
     },
-    validationSchema: CreateBlogSchema,
+    validationSchema: RegisterOrganizerSchema,
     onSubmit: async (values) => {
-      console.log("values", values);
-      //   await createBlog(values);
+      await RegisterOrg(values);
     },
   });
 
@@ -70,7 +69,7 @@ const RegisterOrganizerForm = () => {
   return (
     <form
       onSubmit={formik.handleSubmit}
-      className="mx-auto mb-5 w-[80%] space-y-4"
+      className="mx-auto mb-5 md:w-[80%] space-y-4 rounded-2xl border p-4 shadow-md"
     >
       <div className="grid gap-2">
         <Label htmlFor="organizerPict">Organizer Picture</Label>
@@ -106,8 +105,8 @@ const RegisterOrganizerForm = () => {
             </Button>
           )}
         </div>
-        {!!formik.touched.thumbnail && !!formik.errors.thumbnail && (
-          <p className="text-sm text-red-500">{formik.errors.thumbnail}</p>
+        {!!formik.touched.organizerPict && !!formik.errors.organizerPict && (
+          <p className="text-sm text-red-500">{formik.errors.organizerPict}</p>
         )}
       </div>
 
@@ -183,7 +182,7 @@ const RegisterOrganizerForm = () => {
       />
 
       <Button
-        disabled={isPending|| valid!=="true"}
+        disabled={isPending || valid !== "true" || !formik.isValid}
         type="submit"
         className="w-full hover:border-3 hover:border-black hover:bg-amber-500 hover:text-2xl hover:text-black"
       >

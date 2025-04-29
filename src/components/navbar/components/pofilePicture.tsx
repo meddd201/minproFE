@@ -10,14 +10,24 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ShoppingCart } from "lucide-react";
+import { useSession, signOut } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useAuthStore } from "../../../stores/auth";
 
 const PofilePicture = () => {
   const router = useRouter();
-  const { user, clearAuth } = useAuthStore();
+  const session = useSession();
+  const user = session?.data?.user;
+
+  const profileSrc =
+    user?.profilePict === "null" || !user?.profilePict
+      ? "/logo/logo.svg"
+      : user?.profilePict;
+
+  const logout = () => {
+    signOut({ redirectTo: "/" });
+  };
 
   if (user) {
     return (
@@ -32,7 +42,7 @@ const PofilePicture = () => {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Image
-              src={user?.profilePict || "/logo/logo.svg"}
+              src={profileSrc}
               alt="Profile"
               width={50}
               height={50}
@@ -63,7 +73,7 @@ const PofilePicture = () => {
               </>
             )}
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={clearAuth}>Log out</DropdownMenuItem>
+            <DropdownMenuItem onClick={logout}>Log out</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

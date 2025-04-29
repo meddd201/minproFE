@@ -2,7 +2,7 @@ import * as Yup from "yup";
 import YupPassword from "yup-password";
 YupPassword(Yup);
 
-export const CreateBlogSchema = Yup.object().shape({
+export const RegisterOrganizerSchema = Yup.object().shape({
   name: Yup.string()
     .required("Name is required")
     .matches(/^[a-zA-Z0-9 ]*$/)
@@ -11,5 +11,5 @@ export const CreateBlogSchema = Yup.object().shape({
   description: Yup.string().required("Description is required"),
   bankTarget: Yup.string().required("BankTarget is required"),
   paymentTarget: Yup.number().required("PaymentTarget is required"),
-  thumbnail: Yup.mixed().nullable(),
+  organizerPict: Yup.mixed().nullable(),
 });

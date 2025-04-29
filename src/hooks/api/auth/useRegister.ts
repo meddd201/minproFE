@@ -2,13 +2,12 @@ import { axiosInstance } from "@/lib/axios";
 import { User } from "@/types/user";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useAuthStore } from "../../../stores/auth";
 import { toast } from "sonner";
 
 const useRegister = () => {
   const router = useRouter();
-  const { onAuthSuccess } = useAuthStore();
   return useMutation({
     mutationFn: async (
       payload: Omit<User, "id" | "profilePict" | "role" | "referralCode">,
@@ -16,8 +15,9 @@ const useRegister = () => {
       const { data } = await axiosInstance.post(`/auth/register`, payload);
       return data;
     },
-    onSuccess: (data) => {
-      onAuthSuccess(data.user, data.token);
+    onSuccess: async (data) => {
+      const datatosSignIn = { ...data.user, accessToken: data.accessToken };
+      await signIn("credentials", { ...datatosSignIn, redirect: false });
       toast.success(data.message || "Registration successful");
       router.push("/");
     },

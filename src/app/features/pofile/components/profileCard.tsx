@@ -1,15 +1,15 @@
+"use client";
+import { Edit } from "lucide-react";
+import { useSession } from "next-auth/react";
 import React from "react";
-import { useAuthStore } from "../../../../stores/auth";
-import { Edit, Edit2, Edit3 } from "lucide-react";
 import ModalEditName from "./modalEditName";
-import { on } from "events";
-import { toast } from "sonner";
 
 const ProfileCard = () => {
-  const { user } = useAuthStore();
+  const session = useSession();
+  const user = session.data?.user;
   const [openName, setOpenName] = React.useState(false);
-  const [openEmail, setOpenEmail] = React.useState(false);
-  const [openPassword, setOpenPassword] = React.useState(false);
+  // const [openEmail, setOpenEmail] = React.useState(false);
+  // const [openPassword, setOpenPassword] = React.useState(false);
   const ContentRow = ({
     label,
     value,
@@ -26,7 +26,12 @@ const ProfileCard = () => {
       </strong>
       <div className="col-span-2 flex justify-between">
         <p>{value || "N/A"}</p>
-        {callback && <Edit onClick={callback} className="text-blue-500" />}
+        {callback && (
+          <Edit
+            onClick={callback}
+            className="text-blue-500 hover:cursor-pointer"
+          />
+        )}
       </div>
     </div>
   );

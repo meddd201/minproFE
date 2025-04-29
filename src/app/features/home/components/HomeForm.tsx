@@ -5,12 +5,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import useGetEvents from "@/hooks/api/events/useGetEvents";
 import { Sparkles, Ticket } from "lucide-react";
-import { SearchBar } from "../../../src/components/search-bar";
-import EventCard from "./EventCard";
-import Footer from "@/components/footer";
-import Link from "next/link";
 import CategoryCard from "./CategoryCard";
-import { useRouter } from "next/navigation";
+import EventCard from "./EventCard";
+import { SearchBar } from "./search-bar";
 
 interface Event {
   id: string;

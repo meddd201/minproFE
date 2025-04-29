@@ -1,13 +1,13 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CalendarDays, Clock, MapPin, Star } from "lucide-react";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { IEvent } from "@/types/events";
+import { format } from "date-fns";
+import { CalendarDays, Clock, MapPin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { FC } from "react";
-import { IEvent } from "@/types/events";
-import { format } from "date-fns";
 
 
 // Interface for event properties passed from backend

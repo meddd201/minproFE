@@ -69,7 +69,7 @@ const RegisterOrganizerForm = () => {
   return (
     <form
       onSubmit={formik.handleSubmit}
-      className="mx-auto mb-5 w-[80%] space-y-4 rounded-2xl border p-4 shadow-md"
+      className="mx-auto mb-5 md:w-[80%] space-y-4 rounded-2xl border p-4 shadow-md"
     >
       <div className="grid gap-2">
         <Label htmlFor="organizerPict">Organizer Picture</Label>

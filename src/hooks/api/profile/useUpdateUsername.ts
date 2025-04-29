@@ -1,11 +1,11 @@
 import useAxios from "@/hooks/useAxios";
-import { useAuthStore } from "@/stores/auth";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
+import { signIn, useSession } from "next-auth/react";
 import { toast } from "sonner";
 
 const useUpdateUsername = () => {
-  const { user, onUpdateUser } = useAuthStore();
+  const session = useSession();
   const { axiosInstance } = useAxios();
   return useMutation({
     mutationFn: async (username: string) => {
@@ -15,8 +15,10 @@ const useUpdateUsername = () => {
 
       return data;
     },
-    onSuccess: (data) => {
-      onUpdateUser(data.user);
+    onSuccess: async(data) => {
+      const datatosSignIn = { ...data.user, accessToken: data.accessToken };
+      await signIn("credentials", { ...datatosSignIn, redirect: false });
+
       toast.success(data.message || "Username updated successfully");
     },
     onError: (error: AxiosError<{ message: string; code: number }>) => {

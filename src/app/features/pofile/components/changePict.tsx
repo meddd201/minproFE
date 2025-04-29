@@ -2,16 +2,21 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import useProfilePicture from "@/hooks/api/profile/useUpdatePicture";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import React, { useRef } from "react";
-import { useAuthStore } from "../../../../stores/auth";
 import { toast } from "sonner";
 
 const ChangePict = () => {
-  const { user } = useAuthStore();
+  const session = useSession();
+  const user = session?.data?.user;
+
   const Pictref = useRef<HTMLInputElement>(null);
   const { mutateAsync: changeProfile, isPending } = useProfilePicture();
-
+  const profileSrc =
+    user?.profilePict === "null" || !user?.profilePict
+      ? "/logo/logo.svg"
+      : user?.profilePict;
   const onchangePict = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.currentTarget.files?.[0];
     if (file) {
@@ -28,10 +33,10 @@ const ChangePict = () => {
   };
 
   return (
-    <div className="shrink flex-col items-center justify-center gap-2 overflow-hidden rounded-lg border bg-white p-4 shadow-md shadow-black/20 md:flex md:w-1/3">
+    <div className="shrink flex-col items-center justify-center gap-2 overflow-hidden rounded-lg border bg-white p-4 shadow-md shadow-black/20 lg:flex lg:w-1/3">
       <div className="relative mx-auto aspect-square w-1/3 overflow-clip border-2 p-1">
         <Image
-          src={user?.profilePict || "/logo/logo.svg"}
+          src={profileSrc}
           alt="Profile"
           fill
           className="aspect-square"

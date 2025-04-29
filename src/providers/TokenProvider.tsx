@@ -1,27 +1,29 @@
 "use client";
-import { FC, PropsWithChildren, useEffect } from "react";
-import { jwtDecode } from "jwt-decode";
 import { fromUnixTime, isAfter } from "date-fns";
-import { useAuthStore } from "@/stores/auth";
+import { jwtDecode } from "jwt-decode";
+import { useSession, signOut } from "next-auth/react";
+import { FC, PropsWithChildren, useEffect } from "react";
 const TokenProvider: FC<PropsWithChildren> = ({ children }) => {
-  const { accessToken, clearAuth } = useAuthStore();
+  const session = useSession();
+  const accessToken = session.data?.user.accessToken;
   useEffect(() => {
-    const checkTOkenValidity = () => {
+    const checkTokenValidity = () => {
       if (accessToken) {
         try {
+          console.log("Access Token:", accessToken);
           const decodedToken = jwtDecode(accessToken);
           const tokenExpiry = fromUnixTime(decodedToken.exp!);
           if (isAfter(new Date(), tokenExpiry)) {
-            clearAuth();
+            signOut();
           }
         } catch (error) {
-          clearAuth();
+          signOut();
         }
       }
     };
-    const interval = setInterval(checkTOkenValidity, 15 * 1000);
+    const interval = setInterval(checkTokenValidity, 15 * 1000);
     return () => clearInterval(interval);
-  }, [accessToken, clearAuth]);
+  }, [accessToken, signOut]);
   return <> {children}</>;
 };
 

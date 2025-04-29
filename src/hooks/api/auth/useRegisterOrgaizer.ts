@@ -1,14 +1,12 @@
 import { axiosInstance } from "@/lib/axios";
-import { User } from "@/types/user";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useAuthStore } from "../../../stores/auth";
 import { toast } from "sonner";
 
 const useRegisterOrgaizer = () => {
   const router = useRouter();
-  const { onAuthSuccess } = useAuthStore();
   return useMutation({
     mutationFn: async (payload: {
       name: string;
@@ -32,8 +30,9 @@ const useRegisterOrgaizer = () => {
       );
       return data;
     },
-    onSuccess: (data) => {
-      onAuthSuccess(data.user, data.token);
+    onSuccess: async(data) => {
+      const datatosSignIn = { ...data.user, accessToken: data.accessToken };
+      await signIn("credentials", { ...datatosSignIn, redirect: false });
       toast.success(data.message || "Registration Organizer successful");
       router.push("/");
     },

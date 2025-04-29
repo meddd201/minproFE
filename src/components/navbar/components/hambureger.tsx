@@ -1,19 +1,28 @@
 "use client";
 
-import React, { useState } from "react";
-import { useAuthStore } from "../../../stores/auth";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { ShoppingCart } from "lucide-react";
+import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
+import Link from "next/link";
+import { useState } from "react";
 
 const Hamburger = () => {
-  const { user, clearAuth } = useAuthStore();
+  const session = useSession();
+  const user = session?.data?.user;
+
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
+
+  const logout = () => {
+    signOut({ redirectTo: "/" });
+  };
+  const profileSrc =
+    user?.profilePict === "null" || !user?.profilePict
+      ? "/logo/logo.svg"
+      : user?.profilePict;
 
   return (
     <div className="flex gap-4 text-black md:hidden">
@@ -48,7 +57,7 @@ const Hamburger = () => {
               <div className="mb-4">
                 <div className="relative mx-auto aspect-square w-1/3">
                   <Image
-                    src={user?.profilePict || "/logo/logo.svg"}
+                    src={profileSrc}
                     alt="Profile"
                     fill
                     quality={40}
@@ -62,13 +71,13 @@ const Hamburger = () => {
               <div className="grid gap-2 py-4">
                 <Link
                   href="/login"
-                  className="mx-auto w-9/10 font-bold items-center rounded-xl bg-[#008ddc] p-2 text-center text-white shadow-md"
+                  className="mx-auto w-9/10 items-center rounded-xl bg-[#008ddc] p-2 text-center font-bold text-white shadow-md"
                 >
                   LOGIN
                 </Link>
                 <Link
                   href="/register"
-                  className="mx-auto w-9/10 font-bold items-center rounded-xl bg-[#0e5487] p-2 text-center text-white shadow-md"
+                  className="mx-auto w-9/10 items-center rounded-xl bg-[#0e5487] p-2 text-center font-bold text-white shadow-md"
                 >
                   REGISTER
                 </Link>
@@ -118,7 +127,7 @@ const Hamburger = () => {
             About Us
           </Link>
           <Link
-            onClick={clearAuth}
+            onClick={logout}
             href="/"
             className="mx-auto flex w-9/10 items-center rounded-xl bg-white p-2 pl-10 shadow-md"
           >

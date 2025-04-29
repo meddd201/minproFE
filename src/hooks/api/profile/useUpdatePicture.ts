@@ -1,15 +1,14 @@
 import useAxios from "@/hooks/useAxios";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
+import { signIn, useSession } from "next-auth/react";
 import { toast } from "sonner";
-import { useAuthStore } from "../../../stores/auth";
 
 const useProfilePicture = () => {
-  const { user, onUpdateUser } = useAuthStore();
+  const session = useSession();
   const { axiosInstance } = useAxios();
   return useMutation({
     mutationFn: async (profilePict: File) => {
-
       const formData = new FormData();
       formData.append("profilePict", profilePict);
       const { data } = await axiosInstance.patch(
@@ -18,8 +17,9 @@ const useProfilePicture = () => {
       );
       return data;
     },
-    onSuccess: (data) => {
-      onUpdateUser(data.user);
+    onSuccess: async(data) => {
+      const datatosSignIn = { ...data.user, accessToken: data.accessToken };
+      await signIn("credentials", { ...datatosSignIn, redirect: false });
       toast.success(data.message || "Profile picture updated successfully");
     },
     onError: (error: AxiosError<{ message: string; code: number }>) => {

@@ -3,4 +3,7 @@ export interface User {
   email: string;
   username: string;
   password: string;
+  profilePict: string | null;
+  role: string;
+  referralCode: string;
 }

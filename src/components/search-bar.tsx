@@ -25,7 +25,7 @@ import {
 export function SearchBar() {
   const [searchParams, setSearchParams] = React.useState<string>("");
   const [location, setLocation] = React.useState<string>("");
-  const [date, setDate] = React.useState<Date>(new Date());
+  const [date, setDate] = React.useState<Date>();
   const [category, setCategory] = React.useState<string>("");
   const [loadingLocations, setLoadingLocations] = useState(true);
   const [locations, setLocations] = useState<string[]>([]);
@@ -118,12 +118,7 @@ export function SearchBar() {
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0">
-          <Calendar
-            mode="single"
-            selected={date}
-            onSelect={setDate}
-            required
-          />
+          <Calendar mode="single" selected={date} onSelect={setDate} required />
         </PopoverContent>
       </Popover>
 
@@ -155,7 +150,9 @@ export function SearchBar() {
 
       {/* Search Button */}
       <Link
-        href={`/explore?search=${searchParams}&location=${location}&date=${date.toISOString()}&category=${category}`}
+        href={`/explore?search=${searchParams}&location=${location}
+        ${date && `&date=${date.toISOString()}`}
+        &category=${category}`}
       >
         <Button className="bg-purple-600 hover:bg-purple-700">Search</Button>
       </Link>

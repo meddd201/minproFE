@@ -1,15 +1,28 @@
 "use client";
-import { Edit } from "lucide-react";
+import { Clipboard, Edit } from "lucide-react";
 import { useSession } from "next-auth/react";
-import React from "react";
+import { useState } from "react";
 import ModalEditName from "./modalEditName";
+import { toast } from "sonner";
+import ModalEditEmail from "./modalEditEmail";
 
 const ProfileCard = () => {
   const session = useSession();
   const user = session.data?.user;
-  const [openName, setOpenName] = React.useState(false);
-  // const [openEmail, setOpenEmail] = React.useState(false);
-  // const [openPassword, setOpenPassword] = React.useState(false);
+  const [openName, setOpenName] = useState(false);
+  const [openEmail, setOpenEmail] = useState(false);
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text).then(
+      () => {
+        toast.success("Referral code copied to clipboard!");
+      },
+      (err) => {
+        toast.error("Could not copy text: ", err);
+      },
+    );
+  };
+
   const ContentRow = ({
     label,
     value,
@@ -17,7 +30,6 @@ const ProfileCard = () => {
   }: {
     label: string;
     value: string | undefined;
-    icon?: React.ReactNode;
     callback?: () => void;
   }) => (
     <div className="grid grid-cols-3 items-center gap-2 text-sm font-medium text-gray-700">
@@ -29,7 +41,7 @@ const ProfileCard = () => {
         {callback && (
           <Edit
             onClick={callback}
-            className="text-blue-500 hover:cursor-pointer"
+            className="text-blue-500 hover:cursor-pointer hover:text-yellow-500"
           />
         )}
       </div>
@@ -45,11 +57,30 @@ const ProfileCard = () => {
           value={user?.username}
           callback={() => setOpenName(true)}
         />
-        <ContentRow label="Email" value={user?.email} />
+        <ContentRow
+          label="Email"
+          value={user?.email}
+          callback={() => setOpenEmail(true)}
+        />
         <ContentRow label="Role" value={user?.role} />
-        <ContentRow label="Referral Code" value={user?.referralCode} />
+
+        <div className="grid grid-cols-3 items-center gap-2 text-sm font-medium text-gray-700">
+          <strong className="flex justify-between">
+            Referral Code <p>: </p>
+          </strong>
+          <div className="col-span-2 flex justify-between">
+            <p>{user?.referralCode || "N/A"}</p>
+            {user?.referralCode && (
+              <Clipboard
+                onClick={() => copyToClipboard(user.referralCode)}
+                className="text-blue-500 hover:cursor-pointer hover:text-yellow-500"
+              />
+            )}
+          </div>
+        </div>
       </div>
       <ModalEditName isOpen={openName} onClose={() => setOpenName(false)} />
+      <ModalEditEmail isOpen={openEmail} onClose={() => setOpenEmail(false)} />
     </div>
   );
 };

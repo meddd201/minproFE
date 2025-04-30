@@ -15,6 +15,7 @@ interface TiptapRichtextEditorProps {
   onChange: (content: string) => void;
   setError: (field: string, value: string | undefined) => void;
   setTouch: (field: string, value: boolean | undefined) => void;
+  showError: boolean | undefined;
 }
 
 const TiptapRichtextEditor: FC<TiptapRichtextEditorProps> = ({
@@ -25,6 +26,7 @@ const TiptapRichtextEditor: FC<TiptapRichtextEditorProps> = ({
   onChange,
   setError,
   setTouch,
+  showError,
 }) => {
   const editor = useEditor({
     extensions: [StarterKit],
@@ -55,7 +57,7 @@ const TiptapRichtextEditor: FC<TiptapRichtextEditorProps> = ({
       <Label className="my-2">{label}</Label>
       <TiptapMenuBar editor={editor} />
       <EditorContent editor={editor} />
-      {editor?.isEmpty && isTouch && (
+      {editor?.isEmpty && isTouch && showError&& (
         <p className="text-md text-red-500">{label} is Required</p>
       )}
     </div>

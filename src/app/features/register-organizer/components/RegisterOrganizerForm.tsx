@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import useRegisterOrgaizer from "@/hooks/api/auth/useRegisterOrgaizer";
-import useValidateOrganizerName from "@/hooks/api/auth/useValidateOrganizerName";
+import useValidateOrganizerName from "@/hooks/api/validate/useValidateOrganizerName";
 import { useFormik } from "formik";
 import { CircleCheck, CircleX } from "lucide-react";
 import Image from "next/image";
@@ -69,7 +69,7 @@ const RegisterOrganizerForm = () => {
   return (
     <form
       onSubmit={formik.handleSubmit}
-      className="mx-auto mb-5 md:w-[80%] space-y-4 rounded-2xl border p-4 shadow-md"
+      className="mx-auto mb-5 space-y-4 rounded-2xl border p-4 shadow-md md:w-[80%]"
     >
       <div className="grid gap-2">
         <Label htmlFor="organizerPict">Organizer Picture</Label>
@@ -117,7 +117,7 @@ const RegisterOrganizerForm = () => {
             id="name"
             name="name"
             type="text"
-            placeholder="example: PT ONTOL LONTOL KON"
+            placeholder="example: PT Maju Organizer Sejahtera"
             required
             value={formik.values.name}
             onChange={formik.handleChange}
@@ -159,7 +159,7 @@ const RegisterOrganizerForm = () => {
         <Input
           id="paymentTarget"
           name="paymentTarget"
-          type="number"
+          type="text"
           placeholder="example: 1234567890"
           required
           value={formik.values.paymentTarget}
@@ -179,8 +179,12 @@ const RegisterOrganizerForm = () => {
         onChange={(value: string) => formik.setFieldValue("description", value)}
         setError={formik.setFieldError}
         setTouch={formik.setFieldTouched}
+        showError={false}
       />
 
+      {!!formik.touched.description && !!formik.errors.description && (
+        <p className="text-sm text-red-500">{formik.errors.description} OI</p>
+      )}
       <Button
         disabled={isPending || valid !== "true" || !formik.isValid}
         type="submit"

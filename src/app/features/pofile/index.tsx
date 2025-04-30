@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import ChangePict from "./components/changePict";
 import ProfileCard from "./components/profileCard";
+import ChangePassButton from "./components/resetPassButton";
 
 const ProfilePage = () => {
   const session = useSession();
@@ -14,7 +15,7 @@ const ProfilePage = () => {
       <h1 className="mx-auto mb-2 w-fit rounded-md bg-white px-2 py-4 text-center text-2xl font-bold md:text-3xl">
         PROFILE PAGE
       </h1>
-      <div className="my-5 flex flex-col gap-4 lg:flex-row md:px-[50px]">
+      <div className="my-5 flex flex-col gap-4 md:px-[50px] lg:flex-row">
         <ChangePict />
         <div className="flex-col space-y-2 md:grow">
           <ProfileCard />
@@ -25,9 +26,7 @@ const ProfilePage = () => {
               </Button>
             </Link>
           )}
-          <Button className="my-2 w-full rounded-lg border-2 bg-white p-4 text-center text-black shadow-md shadow-black/20 hover:cursor-pointer hover:border-3 hover:border-black hover:bg-amber-500 hover:text-2xl hover:text-black">
-            Reset Password
-          </Button>
+          <ChangePassButton />
         </div>
       </div>
     </main>

@@ -1,6 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { DEFAULT_EMPTY_PROFILE_IMAGE } from "@/config/env";
 import useProfilePicture from "@/hooks/api/profile/useUpdatePicture";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
@@ -15,7 +16,7 @@ const ChangePict = () => {
   const { mutateAsync: changeProfile, isPending } = useProfilePicture();
   const profileSrc =
     user?.profilePict === "null" || !user?.profilePict
-      ? "/logo/logo.svg"
+      ? DEFAULT_EMPTY_PROFILE_IMAGE
       : user?.profilePict;
   const onchangePict = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.currentTarget.files?.[0];

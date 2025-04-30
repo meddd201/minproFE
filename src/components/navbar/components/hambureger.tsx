@@ -1,5 +1,6 @@
 "use client";
 
+import { DEFAULT_EMPTY_PROFILE_IMAGE } from "@/config/env";
 import { ShoppingCart } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
@@ -21,7 +22,7 @@ const Hamburger = () => {
   };
   const profileSrc =
     user?.profilePict === "null" || !user?.profilePict
-      ? "/logo/logo.svg"
+      ? DEFAULT_EMPTY_PROFILE_IMAGE
       : user?.profilePict;
 
   return (
@@ -50,7 +51,7 @@ const Hamburger = () => {
       {isOpen && (
         <section
           onClick={toggleMenu}
-          className="fixed top-0 right-0 bottom-0 left-0 z-10 container h-screen w-screen flex-col items-center justify-center space-y-2 bg-white/80 backdrop-blur-sm"
+          className="fixed top-0 right-0 bottom-0 left-0 z-10 container h-full w-full flex-col items-center justify-center space-y-2 bg-white/80 backdrop-blur-sm"
         >
           <div className="grid w-screen rounded-md bg-white px-[5%] pt-[50px] shadow-md">
             {!!user ? (
@@ -79,6 +80,12 @@ const Hamburger = () => {
               </div>
             )}
           </div>
+          <Link
+            href="/"
+            className="mx-auto flex w-9/10 items-center rounded-xl bg-white p-2 pl-10 shadow-md"
+          >
+            Home
+          </Link>
           {user && (
             <>
               <Link

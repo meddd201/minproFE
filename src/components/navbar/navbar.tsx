@@ -16,7 +16,7 @@ const Navbar = () => {
   return (
     <nav className="relative container mx-auto h-[55px]">
       <div className="fixed top-0 right-0 left-0 z-50 container mx-auto flex h-[55px] items-center justify-between rounded-b-lg bg-white/80 px-4 text-white">
-        <div className="flex items-center gap-0">
+        <Link href={"/"} className="flex items-center gap-0">
           <Image
             src={"/logo/textlogo.svg"}
             alt="LogoText"
@@ -31,7 +31,7 @@ const Navbar = () => {
             height={50}
             className="aspect-square h-full animate-spin rounded-full"
           />
-        </div>
+        </Link>
         <div className="md hidden gap-4 md:flex">
           <Link
             href="/"

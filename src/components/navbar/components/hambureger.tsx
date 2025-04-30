@@ -1,5 +1,6 @@
 "use client";
 
+import { DEFAULT_EMPTY_PROFILE_IMAGE } from "@/config/env";
 import { ShoppingCart } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
@@ -21,7 +22,7 @@ const Hamburger = () => {
   };
   const profileSrc =
     user?.profilePict === "null" || !user?.profilePict
-      ? "/logo/logo.svg"
+      ? DEFAULT_EMPTY_PROFILE_IMAGE
       : user?.profilePict;
 
   return (

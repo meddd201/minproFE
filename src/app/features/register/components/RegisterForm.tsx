@@ -12,7 +12,7 @@ import { WEB_NAME } from "@/config/env";
 import { useState } from "react";
 import { CheckCircle, CircleCheck, CircleX, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
-import useValidateRefferal from "@/hooks/api/auth/useValidateReferal";
+import useValidateRefferal from "@/hooks/api/validate/useValidateReferal";
 import { toast } from "sonner";
 
 export default function RegisterForm({

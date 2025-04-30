@@ -1,20 +1,20 @@
 import useAxios from "@/hooks/useAxios";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { toast } from "sonner";
 
-const useUpdateUsername = () => {
+const useUpdateEmail = () => {
   const { axiosInstance } = useAxios();
   return useMutation({
-    mutationFn: async (username: string) => {
-      const { data } = await axiosInstance.patch(`/profile/username`, {
-        username,
+    mutationFn: async (email: string) => {
+      const { data } = await axiosInstance.patch(`/profile/email`, {
+        email,
       });
 
       return data;
     },
-    onSuccess: async(data) => {
+    onSuccess: async (data) => {
       const datatosSignIn = { ...data.user, accessToken: data.accessToken };
       await signIn("credentials", { ...datatosSignIn, redirect: false });
 
@@ -26,4 +26,4 @@ const useUpdateUsername = () => {
   });
 };
 
-export default useUpdateUsername;
+export default useUpdateEmail;

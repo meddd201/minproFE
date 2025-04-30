@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@radix-ui/react-label";
+import useUpdateUsername from "@/hooks/api/profile/useUpdateUsername";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
@@ -12,6 +12,7 @@ const ModalEditName = ({
   isOpen: boolean;
   onClose: () => void;
 }) => {
+  const { mutateAsync: updateName, isPending } = useUpdateUsername();
   const formik = useFormik({
     initialValues: {
       username: "",
@@ -19,10 +20,11 @@ const ModalEditName = ({
     validationSchema: Yup.object().shape({
       username: Yup.string()
         .min(3, "Username must be at least 3 characters long")
-        .max(50, "Username must be at most 20 characters long")
+        .max(20, "Username must be at most 20 characters long")
         .required("Username is required"),
     }),
     onSubmit: async (values) => {
+      updateName(values.username);
       onClose();
     },
   });
@@ -52,16 +54,17 @@ const ModalEditName = ({
           </div>
           <div className="flex justify-between gap-3">
             <Button
+              disabled={isPending}
               onClick={onClose}
               type="button"
-              className="grow bg-[#9cdcfe] hover:cursor-pointer text-black hover:border-3 hover:border-black hover:bg-amber-500 hover:text-2xl hover:text-black"
+              className="grow bg-[#9cdcfe] text-black hover:cursor-pointer hover:border-3 hover:border-black hover:bg-amber-500 hover:text-2xl hover:text-black"
             >
               Cancel
             </Button>
             <Button
-              disabled={formik.errors.username !== undefined}
+              disabled={formik.errors.username !== undefined || isPending}
               type="submit"
-              className="grow hover:border-3 hover:cursor-pointer hover:border-black hover:bg-amber-500 hover:text-2xl hover:text-black"
+              className="grow hover:cursor-pointer hover:border-3 hover:border-black hover:bg-amber-500 hover:text-2xl hover:text-black"
             >
               Save
             </Button>

@@ -1,4 +1,5 @@
 "use client";
+import { DEFAULT_TOKEN_VALIDATE_TIME } from "@/config/env";
 import { fromUnixTime, isAfter } from "date-fns";
 import { jwtDecode } from "jwt-decode";
 import { useSession, signOut } from "next-auth/react";
@@ -10,7 +11,6 @@ const TokenProvider: FC<PropsWithChildren> = ({ children }) => {
     const checkTokenValidity = () => {
       if (accessToken) {
         try {
-          console.log("Access Token:", accessToken);
           const decodedToken = jwtDecode(accessToken);
           const tokenExpiry = fromUnixTime(decodedToken.exp!);
           if (isAfter(new Date(), tokenExpiry)) {
@@ -21,7 +21,10 @@ const TokenProvider: FC<PropsWithChildren> = ({ children }) => {
         }
       }
     };
-    const interval = setInterval(checkTokenValidity, 15 * 1000);
+    const interval = setInterval(
+      checkTokenValidity,
+      DEFAULT_TOKEN_VALIDATE_TIME,
+    );
     return () => clearInterval(interval);
   }, [accessToken, signOut]);
   return <> {children}</>;

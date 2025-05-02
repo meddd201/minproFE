@@ -1,0 +1,76 @@
+import { EventOrganizer } from "@/types/EventOrganizer";
+import { PageableResponse } from "@/types/pagination";
+import { Fan } from "lucide-react";
+import Image from "next/image";
+import { FC } from "react";
+import OrganizerEventCard from "./EventCard";
+import { PaginationComponent } from "./pagination";
+
+interface ListEventProps {
+  events: PageableResponse<EventOrganizer> | undefined;
+  loading: boolean;
+  error: string | undefined;
+  setpage: (page: number) => void;
+}
+
+const ListEvent: FC<ListEventProps> = ({ events, loading, error, setpage }) => {
+  if (loading) {
+    return (
+      <section className="container mx-auto flex flex-col items-center justify-center py-10 text-center">
+        <Fan size={100} className="mx-auto animate-spin text-gray-500" />
+        <h2 className="animate-bounce text-center text-lg font-semibold text-gray-700">
+          SABARR!
+        </h2>
+      </section>
+    );
+  }
+  if (error || !events) {
+    return (
+      <section className="container mx-auto flex min-h-[50vh] flex-col items-center justify-center py-10 text-center">
+        <Image
+          src="/brokenfan.png"
+          alt="Error"
+          width={100}
+          height={100}
+          className="mx-auto aspect-square w-1/2 text-gray-500 md:w-1/4"
+        />
+        <h2 className="text-center text-lg font-semibold text-gray-700">
+          {error ? error : "Something went wrong"}
+        </h2>
+
+      </section>
+    );
+  }
+  if (events.data.length === 0) {
+    return (
+      <section className="container mx-auto flex min-h-[50vh] flex-col items-center justify-center py-10 text-center">
+        <Image
+          src="/notfan.png"
+          alt="Error"
+          width={100}
+          height={100}
+          className="mx-auto aspect-square w-1/2 text-gray-500 md:w-1/4"
+        />
+        <h2 className="text-center text-lg font-semibold text-gray-700">
+          You don't have It, Create Some !
+        </h2>
+      </section>
+    );
+  }
+  return (
+    <section className="container mx-auto my-10 min-h-[60vh] p-4">
+      <div className="mb-10 grid grid-cols-1 gap-4 sm:grid-cols-2 md:px-20 lg:grid-cols-3">
+        {events.data?.map((event) => (
+          <OrganizerEventCard key={event.id} event={event} />
+        ))}
+      </div>
+      <PaginationComponent
+        totalPages={events.meta.total / events.meta.take}
+        currentPage={events.meta.page}
+        setPage={setpage}
+      />
+    </section>
+  );
+};
+
+export default ListEvent;

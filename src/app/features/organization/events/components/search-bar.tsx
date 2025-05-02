@@ -33,8 +33,8 @@ interface SearchBarProps {
   onLocationChange: (location: string) => void;
   dateParams: Date | null;
   onDateChange: (date: Date | null) => void;
-  locationData: string[];
-  categoryData: string[];
+  locationData: string[] | undefined;
+  categoryData: string[] | undefined;
   title?: string;
   className?: string;
 }
@@ -92,9 +92,9 @@ const SearchBar: FC<SearchBarProps> = ({
               </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent side="bottom" className="">
-              <DropdownMenuRadioGroup>
+              <DropdownMenuRadioGroup className="flex w-[80vw] flex-col md:w-fit">
                 <DropdownMenuRadioItem
-                  className="w-[90vw] md:w-72"
+                  className=""
                   onClick={() => onLocationChange("")}
                   key={"all"}
                   value={"All"}
@@ -106,15 +106,21 @@ const SearchBar: FC<SearchBarProps> = ({
                     Loading locations...
                   </div>
                 ) : (
-                  locationData.map((loc) => (
-                    <DropdownMenuRadioItem
-                      onClick={() => onLocationChange(loc)}
-                      key={loc}
-                      value={loc}
-                    >
-                      {loc}
-                    </DropdownMenuRadioItem>
-                  ))
+                  locationData?.map((loc) => {
+                    const locationName = loc
+                      .replace(/_/g, " ")
+                      .toLowerCase()
+                      .replace(/\b\w/g, (char) => char.toUpperCase());
+                    return (
+                      <DropdownMenuRadioItem
+                        onClick={() => onLocationChange(loc)}
+                        key={loc}
+                        value={loc}
+                      >
+                        {locationName}
+                      </DropdownMenuRadioItem>
+                    );
+                  })
                 )}
               </DropdownMenuRadioGroup>
             </DropdownMenuContent>
@@ -122,7 +128,7 @@ const SearchBar: FC<SearchBarProps> = ({
         </div>
         {/* Date Picker */}
         <Popover>
-          <div className="relative flex h-full  items-center justify-center">
+          <div className="relative flex h-full items-center justify-center">
             <PopoverTrigger asChild>
               <Button
                 variant={"outline"}
@@ -142,7 +148,7 @@ const SearchBar: FC<SearchBarProps> = ({
             {dateParams && (
               <Button
                 onClick={() => onDateChange(null)}
-                className="hover:bg-amber-500 hover:text-black w-fit"
+                className="w-fit hover:bg-amber-500 hover:text-black"
               >
                 Clear
               </Button>
@@ -179,7 +185,7 @@ const SearchBar: FC<SearchBarProps> = ({
             <DropdownMenuContent side="bottom" className="flex w-full">
               <DropdownMenuRadioGroup>
                 <DropdownMenuRadioItem
-                  className="w-[90vw] md:w-72"
+                  className="w-[80vw] md:w-50 lg:w-80"
                   onClick={() => onCategoryChange("")}
                   key={""}
                   value={""}
@@ -191,7 +197,7 @@ const SearchBar: FC<SearchBarProps> = ({
                     Loading category...
                   </div>
                 ) : (
-                  categoryData.map((cat) => (
+                  categoryData?.map((cat) => (
                     <DropdownMenuRadioItem
                       onClick={() => onCategoryChange(cat)}
                       key={cat}
@@ -206,6 +212,14 @@ const SearchBar: FC<SearchBarProps> = ({
           </DropdownMenu>
         </div>
       </search>
+      <Link href={"/organization/create-event/step1"}>
+        <Button
+          className="w-full hover:border-3 hover:border-black hover:bg-amber-500 hover:text-2xl hover:text-black"
+          variant="default"
+        >
+          Create New Event
+        </Button>
+      </Link>
     </div>
   );
 };

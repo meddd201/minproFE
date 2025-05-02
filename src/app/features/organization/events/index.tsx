@@ -1,23 +1,50 @@
 "use client";
 import { useState } from "react";
 import SearchBar from "./components/search-bar";
+import ListEvent from "./components/list-event";
+import useGetOrganizerEvent from "@/hooks/api/events/useGetOrganizerEvent";
+import { useDebounce } from "use-debounce";
+import { parseAsInteger, parseAsIsoDate, useQueryState } from "nuqs";
+import useGetOrgLocEvents from "@/hooks/api/events/useGetOrgLocEvents";
+import useGetCategory from "@/hooks/api/events/useGetCategory";
 
 const OrganizerEventPage = () => {
-  const [searchParams, setSearchParams] = useState("");
-  const [category, setCategory] = useState("");
-  const [location, setLocation] = useState("");
-  const [date, setDate] = useState<Date | null>(null);
+  const [searchParams, setSearchParams] = useQueryState("search", {
+    defaultValue: "",
+  });
+  const [category, setCategory] = useQueryState("category", {
+    defaultValue: "",
+  });
+  const [location, setLocation] = useQueryState("locations", {
+    defaultValue: "",
+  });
+  const [date, setDate] = useQueryState("date", parseAsIsoDate);
+  const [page, setPage] = useQueryState("page", parseAsInteger.withDefault(1));
 
-  // duummy data for categories and locations
-  const loadingCategories = false;
-  const loadingLocations = false;
-  const categoryData = ["Music", "Art", "Sports"];
-  const locationData = ["New York", "Los Angeles", "Chicago"];
+  const { data: categoryData, isPending: loadingCategories } = useGetCategory();
+
+  const { data: locationData, isPending: loadingLocations } =
+    useGetOrgLocEvents();
+
+  const [debounchedSearch] = useDebounce(searchParams, 500);
+  const {
+    data: eventOrganizers,
+    isPending,
+    error: dataError,
+  } = useGetOrganizerEvent({
+    page,
+    take: 6,
+    search: debounchedSearch,
+    category: category,
+    location: location,
+    date: date ? new Date(date) : undefined,
+  });
+
   return (
-    <main className="container mx-auto">
-      <div className="relative mb-12 flex w-full items-center justify-center bg-gradient-to-r from-purple-600 to-yellow-400">
+    <main>
+      <div className="relative container mx-auto mb-12 flex w-full items-center justify-center bg-gradient-to-r from-purple-600 to-yellow-400">
         <SearchBar
-          className="relative top-10 z-10 mx-auto -mt-10  w-full shadow-md md:max-w-4/5 md:py-4"
+          className="relative top-10 z-10 mx-auto -mt-10 w-full shadow-md md:max-w-4/5 md:py-4"
           searchParams={searchParams}
           onSearch={(search) => setSearchParams(search)}
           categoryParams={category}
@@ -27,11 +54,17 @@ const OrganizerEventPage = () => {
           loadingLocations={loadingLocations}
           onLocationChange={(location) => setLocation(location)}
           dateParams={date}
-          onDateChange={(date) => setDate(date)}
-          locationData={locationData}
-          categoryData={categoryData}
+          onDateChange={(e) => setDate(e)}
+          locationData={locationData?.data}
+          categoryData={categoryData?.data}
         />
       </div>
+      <ListEvent
+        events={eventOrganizers}
+        loading={isPending}
+        error={dataError?.message}
+        setpage={setPage}
+      />
     </main>
   );
 };

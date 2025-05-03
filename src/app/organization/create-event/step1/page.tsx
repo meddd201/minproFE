@@ -1,9 +1,18 @@
 "use client";
 
+import TiptapRichtextEditor from "@/components/TiptapRichTextEditor";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import useCreateEvent from "@/hooks/api/events/useCreateEvent";
 import { format } from "date-fns";
 import { useFormik } from "formik";
@@ -29,8 +38,8 @@ const validationSchema = Yup.object({
 });
 
 export default function CreateEventPage() {
-  const [eventStart, setEventStart] = useState<Date | null>(null);
-  const [eventEnd, setEventEnd] = useState<Date | null>(null);
+  const [eventStart, setEventStart] = useState<String>("");
+  const [eventEnd, setEventEnd] = useState<string>("");
 
   const { mutateAsync: createEvent, isPending } = useCreateEvent();
 
@@ -48,7 +57,7 @@ export default function CreateEventPage() {
     onSubmit: async (values) => {
       console.log(values);
 
-      // await createEvent(values);
+      await createEvent(values);
     },
   });
 
@@ -60,98 +69,125 @@ export default function CreateEventPage() {
           Fill in the details to create your event
         </p>
       </div>
-
       <Card>
         <CardContent className="pt-6">
           <form onSubmit={formik.handleSubmit} className="space-y-6">
             {/* Event Name */}
-            {/* <div>
+            <div>
               <label className="mb-1 block font-medium">Event Name</label>
               <Input
                 type="text"
                 name="name"
                 placeholder="e.g. Tech Conference 2024"
                 className="w-full"
+                value={formik.values.name}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
               />
               {!!formik.touched.name && !!formik.errors.name && (
                 <p className="text-sm text-red-500">{formik.errors.name}</p>
               )}
-            </div> */}
+            </div>
 
             {/* Event Description */}
-            {/* <div>
-              <label className="mb-1 block font-medium">
-                Event Description
-              </label>
-              <Input
-                name="description"
-                placeholder="Describe your event..."
-                className="w-full"
+            <div>
+              <TiptapRichtextEditor
+                content={formik.values.description}
+                isTouch={formik.touched.description}
+                label="Description"
+                field="description"
+                onChange={(value: string) =>
+                  formik.setFieldValue("description", value)
+                }
+                setError={formik.setFieldError}
+                setTouch={formik.setFieldTouched}
+                showError={false}
               />
-              {!!formik.touched.description && !!formik.errors.description && (
-                <p className="text-sm text-red-500">{formik.errors.description}</p>
-              )}
 
-            </div> */}
+              {!!formik.touched.description && !!formik.errors.description && (
+                <p className="text-sm text-red-500">
+                  {formik.errors.description} OI
+                </p>
+              )}
+            </div>
 
             {/* Event Category */}
-            {/* <div>
+            <div>
               <label className="mb-1 block font-medium">Category</label>
-              <Input
-              type="category"
+              {/* <Select
+                type="category"
                 name="category"
                 className="w-full rounded-md border p-2"
+                value={formik.values.category}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              /> */}
+
+              <Select
+                onValueChange={(value) => {
+                  formik.setFieldValue("category", value);
+                  
+                }}
               >
-                <option value="" label="Select a category" />
-                <option value="sports" label="Sport" />
-                <option value="music" label="Music" />
-                <option value="festival" label="Festival" />
-                <option value="concert" label="Concert" />
-              </Input>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select a fruit" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Fruits</SelectLabel>
+                    <SelectItem value="Sports">Sports</SelectItem>
+                    <SelectItem value="Concerts">Concerts</SelectItem>
+                    <SelectItem value="Festivals">Festivals</SelectItem>
+                    <SelectItem value="Theatre">Theatre</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+
               {!!formik.touched.category && !!formik.errors.category && (
                 <p className="text-sm text-red-500">{formik.errors.category}</p>
               )}
-            </div> */}
+            </div>
 
             {/* Event Location */}
-            {/* <div>
+            <div>
               <label className="mb-1 block font-medium">Location</label>
               <Input
                 type="text"
                 name="location"
                 placeholder="e.g. Jakarta Convention Center"
                 className="w-full"
+                value={formik.values.location}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
               />
+
               {!!formik.touched.location && !!formik.errors.location && (
                 <p className="text-sm text-red-500">{formik.errors.location}</p>
               )}
-            </div> */}
+            </div>
 
             {/* Start Date */}
             <div className="space-y-4">
-              {/* <h2 className="text-lg font-medium">Date</h2> */}
+              <h2 className="text-lg font-medium">Date</h2>
 
               {/* Start Date and End Date */}
               <div className="grid gap-4 md:grid-cols-2">
-                {/* Start Date */}
                 <div className="space-y-2">
                   <label className="block font-medium">Start Date</label>
                   <div className="relative">
                     <CalendarIcon className="text-muted-foreground absolute top-3 left-3 h-4 w-4" />
-                    <input
+                    <Input
                       type="date"
                       name="eventStart"
                       className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring w-full rounded-md border px-3 py-2 pl-10 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-                      value={eventStart ? format(eventStart, "yyyy-MM-dd") : ""}
-                      onChange={(e) => {
-                        const date = new Date(e.target.value);
-                        setEventStart(date);
-                      }}
+                      value={formik.values.eventStart}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
                     />
                   </div>
                   {eventStart && (
                     <p className="text-muted-foreground mt-1 text-sm">
-                      Selected: {format(eventStart, "PPP")}
+                      Selected: {eventStart}
                     </p>
                   )}
                   {/* {errors.eventStart && (
@@ -168,14 +204,13 @@ export default function CreateEventPage() {
                   </label>
                   <div className="relative">
                     <CalendarIcon className="text-muted-foreground absolute top-3 left-3 h-4 w-4" />
-                    <input
+                    <Input
                       type="date"
+                      name="eventEnd"
                       className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring w-full rounded-md border px-3 py-2 pl-10 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-                      value={eventEnd ? format(eventEnd, "yyyy-MM-dd") : ""}
-                      onChange={(e) => {
-                        const date = new Date(e.target.value);
-                        setEventEnd(date);
-                      }}
+                      value={formik.values.eventEnd}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
                     />
                   </div>
                   {eventEnd && (
@@ -195,22 +230,26 @@ export default function CreateEventPage() {
             {/* Event Picture */}
             <div>
               <label className="mb-1 block font-medium">Event Picture</label>
-              <input
+              <Input
                 type="file"
                 accept="image/*"
                 onChange={(event) => {
-                  formik.setFieldValue("eventPict", event.currentTarget.files?.[0]);
+                  formik.setFieldValue(
+                    "eventPict",
+                    event.currentTarget.files?.[0],
+                  );
                 }}
                 className="w-full rounded-md border p-2"
               />
               {!!formik.touched.eventPict && !!formik.errors.eventPict && (
-                <p className="text-sm text-red-500">{formik.errors.eventPict}</p>
+                <p className="text-sm text-red-500">
+                  {formik.errors.eventPict}
+                </p>
               )}
             </div>
 
             {/* Submit Button */}
 
-            <Link href="/organization/create-event/step2">
               <Button
                 disabled={isPending || !formik.isValid}
                 type="submit"
@@ -218,10 +257,10 @@ export default function CreateEventPage() {
               >
                 Next
               </Button>
-            </Link>
           </form>
         </CardContent>
       </Card>
     </div>
   );
 }
+

@@ -23,7 +23,6 @@ const useRegisterOrgaizer = () => {
       if (payload.organizerPict) {
         formData.append("organizerPict", payload.organizerPict);
       }
-      console.log(formData);
       const { data } = await axiosInstance.post(
         `/auth/register-organizer`,
         formData,

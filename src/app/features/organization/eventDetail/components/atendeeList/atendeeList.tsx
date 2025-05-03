@@ -126,7 +126,7 @@ const AtendeeList: FC<AtendeeListProps> = ({ eventId }) => {
               <TableBody>
                 {data?.data.map((atendee) => (
                   <TableRow key={atendee.id}>
-                    <TableCell className="font-medium">
+                    <TableCell className="font-medium break-words whitespace-pre-wrap">
                       {atendee.usersEvents.users.username}
                     </TableCell>
                     <TableCell>{atendee.tickets.name}</TableCell>

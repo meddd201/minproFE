@@ -1,6 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FC } from "react";
-import AtendeeList from "./atendeeList/atendeeList";
+import AtendeeList from "./atendeeList/AtendeeList";
+import EventTransaction from "./eventTransaction/EventTransaction";
 
 interface EventDetailBodyProps {
   eventId: string;
@@ -25,7 +26,7 @@ const EventDetailBody: FC<EventDetailBodyProps> = ({ eventId }) => {
         <AtendeeList eventId={eventId} />
       </TabsContent>
       <TabsContent value="transaction">
-        <div>Transaction</div>
+        <EventTransaction eventId={eventId} />
       </TabsContent>
     </Tabs>
   );

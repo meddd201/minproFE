@@ -6,6 +6,7 @@ import { FC } from "react";
 import OrganizerEventCard from "./EventCard";
 import { PaginationComponent } from "../../../../../components/pagination";
 import Loading from "@/components/loading/loading";
+import ErrorComponent from "@/components/errorComponent";
 
 interface ListEventProps {
   events: PageableResponse<Event> | undefined;
@@ -20,18 +21,10 @@ const ListEvent: FC<ListEventProps> = ({ events, loading, error, setpage }) => {
   }
   if (error || !events) {
     return (
-      <section className="container mx-auto flex min-h-[50vh] flex-col items-center justify-center py-10 text-center">
-        <Image
-          src="/brokenfan.png"
-          alt="Error"
-          width={100}
-          height={100}
-          className="mx-auto aspect-square w-1/2 text-gray-500 md:w-1/4"
-        />
-        <h2 className="text-center text-lg font-semibold text-gray-700">
-          {error ? error : "Something went wrong"}
-        </h2>
-      </section>
+      <ErrorComponent
+        message={error}
+        className="container mx-auto flex min-h-[50vh] py-10"
+      />
     );
   }
   if (events.data.length === 0) {

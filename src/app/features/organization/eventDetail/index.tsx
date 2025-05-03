@@ -13,7 +13,7 @@ interface OrganizerEventDetailPageProps {
 const OrganizerEventDetailPage: FC<OrganizerEventDetailPageProps> = ({
   eventId,
 }) => {
-  const { data: eventData, isPending, error } = useGetOrgDetailEvent(eventId);
+  const { data: _eventData, isPending, error } = useGetOrgDetailEvent(eventId);
   if (isPending) {
     return <Loading className="h-screen" />;
   }

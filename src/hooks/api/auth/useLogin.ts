@@ -15,7 +15,6 @@ const useLogin = () => {
     },
     onSuccess: async (data) => {
 
-      console.log(data);
       await signIn("credentials", { ...data, redirect: false });
       toast.success(data.message || "Login successful");
       router.push("/");

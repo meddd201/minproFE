@@ -1,5 +1,5 @@
+import ProfilePage from "@/features/pofile";
 import { auth } from "@/lib/auth";
-import ProfilePage from "../features/pofile";
 import { redirect } from "next/navigation";
 
 const Profile = async () => {

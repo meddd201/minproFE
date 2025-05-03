@@ -51,9 +51,9 @@ const Hamburger = () => {
       {isOpen && (
         <section
           onClick={toggleMenu}
-          className="fixed top-0 right-0 bottom-0 left-0 z-10 container h-full w-full flex-col items-center justify-center space-y-2 bg-white/80 backdrop-blur-sm"
+          className="fixed mx-auto top-0 right-0 bottom-0 left-0 z-10 container h-full w-full flex-col items-center justify-center space-y-2 bg-white/80 backdrop-blur-sm"
         >
-          <div className="grid w-screen rounded-md bg-white px-[5%] pt-[50px] shadow-md">
+          <div className="grid w-full rounded-md bg-white px-[5%] pt-[50px] shadow-md">
             {!!user ? (
               <div className="mb-4">
                 <div className="relative mx-auto aspect-square w-1/3">

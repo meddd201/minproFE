@@ -66,12 +66,12 @@ const PofilePicture = () => {
               <DropdownMenuItem>Transaction</DropdownMenuItem>
             </DropdownMenuGroup>
             {user?.role === "ADMIN" && (
-              <>
+              <Link href="/organization">
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                   <DropdownMenuItem>Organization</DropdownMenuItem>
                 </DropdownMenuGroup>
-              </>
+              </Link>
             )}
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={logout}>Log out</DropdownMenuItem>

@@ -1,7 +1,7 @@
 "use client";
 
 import useAxios from "@/hooks/useAxios";
-import { EventOrganizer } from "@/types/EventOrganizer";
+import { Event } from "@/types/events";
 import type { PageableResponse, PaginationQueries } from "@/types/pagination";
 import { useQuery } from "@tanstack/react-query";
 
@@ -16,9 +16,10 @@ const useGetOrganizerEvent = (queries?: GetOrganizerEventQuery) => {
   return useQuery({
     queryKey: ["organizerEvent", queries],
     queryFn: async () => {
-      const { data } = await axiosInstance.get<
-        PageableResponse<EventOrganizer>
-      >("/events/organizer", { params: queries });
+      const { data } = await axiosInstance.get<PageableResponse<Event>>(
+        "/events/organizer",
+        { params: queries },
+      );
       return data;
     },
   });

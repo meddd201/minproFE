@@ -103,7 +103,7 @@ export default function LoginForm({
               </div>
               <div className="flex flex-col gap-1"> 
                 <Button
-                  disabled={isPending}
+                  disabled={isPending || !formik.dirty}
                   type="submit"
                   className="w-full hover:border-3 hover:border-black hover:bg-amber-500 hover:text-2xl hover:text-black"
                 >

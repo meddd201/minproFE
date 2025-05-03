@@ -1,7 +1,7 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
-import { EventOrganizer } from "@/types/EventOrganizer";
+import { Event } from "@/types/events";
 import { Label } from "@radix-ui/react-dropdown-menu";
 import { format } from "date-fns";
 import { CalendarDays, MapPin } from "lucide-react";
@@ -11,13 +11,13 @@ import { FC } from "react";
 
 // Interface for event properties passed from backend
 interface EventCardProps {
-  event: EventOrganizer;
+  event: Event;
 }
 
 const OrganizerEventCard: FC<EventCardProps> = ({ event }) => {
   const formattedEventStart = format(new Date(event.eventStart), "PPP");
   const formattedEventEnd = format(new Date(event.eventEnd), "PPP");
-  let refto = `/organization/events/${event.slug}`;
+  let refto = `/organization/events/${event.id}`;
   let colorStatus = "bg-green-600/50";
   let colorCategory = "text-muted-foreground bg-amber-400/50";
   if (event.category === "Sports") {
@@ -33,10 +33,10 @@ const OrganizerEventCard: FC<EventCardProps> = ({ event }) => {
   if (event.status === "DRAFT") {
     colorStatus = "bg-slate-500/50 ";
     refto = `/organization/create-event/step1/${event.id}`;
-    if (event._count.tickets > 0) {
+    if (event._count!.tickets > 0) {
       refto = `/organization/create-event/step2/${event.id}`;
     }
-    if (event._count.eventVoucher > 0) {
+    if (event._count!.eventVoucher > 0) {
       refto = `/organization/create-event/step3/${event.id}`;
     }
   }
@@ -59,9 +59,7 @@ const OrganizerEventCard: FC<EventCardProps> = ({ event }) => {
         </div>
         <div className="mx-2 mb-4 h-fit">
           <h3 className="text-md line-clamp-1 font-bold">{event.name}</h3>
-          <Label
-            className={` text-sm ${colorCategory} w-fit rounded-md px-1`}
-          >
+          <Label className={`text-sm ${colorCategory} w-fit rounded-md px-1`}>
             {event.category
               .replace(/_/g, " ")
               .toLowerCase()

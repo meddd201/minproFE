@@ -9,7 +9,7 @@ export default async function OrganizationLayout({
 }) {
   const session = await auth();
   if (!session) return redirect("/");
-
+  if (session.user.role !== "ADMIN") return redirect("/");
   return (
     <main>
       <Navigator />

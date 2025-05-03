@@ -1,12 +1,11 @@
 "use client";
-import { useState } from "react";
-import SearchBar from "./components/search-bar";
-import ListEvent from "./components/list-event";
-import useGetOrganizerEvent from "@/hooks/api/events/useGetOrganizerEvent";
-import { useDebounce } from "use-debounce";
-import { parseAsInteger, parseAsIsoDate, useQueryState } from "nuqs";
-import useGetOrgLocEvents from "@/hooks/api/events/useGetOrgLocEvents";
 import useGetCategory from "@/hooks/api/events/useGetCategory";
+import useGetOrganizerEvent from "@/hooks/api/events/useGetOrganizerEvent";
+import useGetOrgLocEvents from "@/hooks/api/events/useGetOrgLocEvents";
+import { parseAsInteger, parseAsIsoDate, useQueryState } from "nuqs";
+import { useDebounce } from "use-debounce";
+import ListEvent from "./components/ListEvent";
+import SearchBar from "./components/SearchBar";
 
 const OrganizerEventPage = () => {
   const [searchParams, setSearchParams] = useQueryState("search", {

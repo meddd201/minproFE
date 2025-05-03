@@ -1,13 +1,14 @@
-import { EventOrganizer } from "@/types/EventOrganizer";
+import { Event } from "@/types/events";
 import { PageableResponse } from "@/types/pagination";
 import { Fan } from "lucide-react";
 import Image from "next/image";
 import { FC } from "react";
 import OrganizerEventCard from "./EventCard";
-import { PaginationComponent } from "./pagination";
+import { PaginationComponent } from "../../../../../components/pagination";
+import Loading from "@/components/loading/loading";
 
 interface ListEventProps {
-  events: PageableResponse<EventOrganizer> | undefined;
+  events: PageableResponse<Event> | undefined;
   loading: boolean;
   error: string | undefined;
   setpage: (page: number) => void;
@@ -15,14 +16,7 @@ interface ListEventProps {
 
 const ListEvent: FC<ListEventProps> = ({ events, loading, error, setpage }) => {
   if (loading) {
-    return (
-      <section className="container mx-auto flex flex-col items-center justify-center py-10 text-center">
-        <Fan size={100} className="mx-auto animate-spin text-gray-500" />
-        <h2 className="animate-bounce text-center text-lg font-semibold text-gray-700">
-          SABARR!
-        </h2>
-      </section>
-    );
+    return <Loading className="container mx-auto" />;
   }
   if (error || !events) {
     return (
@@ -37,7 +31,6 @@ const ListEvent: FC<ListEventProps> = ({ events, loading, error, setpage }) => {
         <h2 className="text-center text-lg font-semibold text-gray-700">
           {error ? error : "Something went wrong"}
         </h2>
-
       </section>
     );
   }

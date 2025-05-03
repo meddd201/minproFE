@@ -4,16 +4,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { WEB_NAME } from "@/config/env";
 import useRegister from "@/hooks/api/auth/useRegister";
+import useValidateRefferal from "@/hooks/api/validate/useValidateReferal";
 import { cn } from "@/lib/utils";
 import { useFormik } from "formik";
-import { RegisterValidationSchema } from "./schema";
-import { WEB_NAME } from "@/config/env";
-import { useState } from "react";
-import { CheckCircle, CircleCheck, CircleX, Eye, EyeOff } from "lucide-react";
+import { CircleCheck, CircleX, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
-import useValidateRefferal from "@/hooks/api/validate/useValidateReferal";
-import { toast } from "sonner";
+import { useState } from "react";
+import { RegisterValidationSchema } from "./schema";
 
 export default function RegisterForm({
   className,
@@ -197,7 +196,7 @@ export default function RegisterForm({
               </div>
               <div className="flex flex-col gap-1">
                 <Button
-                  disabled={isPending || valid === "false"}
+                  disabled={isPending || valid === "false" || !formik.dirty}
                   type="submit"
                   className="w-full hover:border-3 hover:border-black hover:bg-amber-500 hover:text-2xl hover:text-black"
                 >

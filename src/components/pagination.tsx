@@ -35,7 +35,7 @@ export const PaginationComponent: FC<PaginationComponentProps> = (page) => {
         </PaginationItem>
         {currentPage > 1 && (
           <PaginationItem>
-            <PaginationLink onClick={() => setPage(1)}>1</PaginationLink>
+            <PaginationLink onClick={() => setPage(currentPage-1)}>{currentPage-1}</PaginationLink>
           </PaginationItem>
         )}
         <PaginationItem>

@@ -72,7 +72,7 @@ const EventTransactionChart: FC<EventTransactionChartProps> = ({ eventId }) => {
     hour: undefined,
     minute: undefined,
   });
-  const [dateFrom, setDateFrom] = useState(new Date().toISOString());
+  const [dateFrom, setDateFrom] = useState<string>(new Date(new Date().setDate(new Date().getDate() - 1)).toISOString().split("T")[0]);
 
   useEffect(() => {
     setXAxisLabel({
@@ -82,25 +82,24 @@ const EventTransactionChart: FC<EventTransactionChartProps> = ({ eventId }) => {
       minute: undefined,
     });
     if (timeRange === "1d") {
+      setDateFrom( new Date(new Date().setDate(new Date().getDate() - 1)).toISOString().split("T")[0]);
       setXAxisLabel({
         month: "short",
         day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
+        hour: undefined,
+        minute: undefined,
       });
-      setDateFrom(new Date(new Date().setDate(dateFrom.getDate() - 1)));
-      
     } else if (timeRange === "7d") {
-      setDateFrom(new Date(new Date().setDate(dateFrom.getDate() - 7)));
+      setDateFrom( new Date(new Date().setDate(new Date().getDate() - 7)).toISOString().split("T")[0]);
     } else if (timeRange === "30d") {
-      setDateFrom(new Date(new Date().setDate(dateFrom.getDate() - 30)));
+      setDateFrom( new Date(new Date().setDate(new Date().getDate() - 30)).toISOString().split("T")[0]);
     } else {
-      const deteToForm = "";
+      setDateFrom( "");
     }
   }, [timeRange]);
 
   const { data: dataToDisplay, error } = useGetTransEventCharts(eventId, {
-    datefrom: "",
+    datefrom: dateFrom,
   });
 
   return (

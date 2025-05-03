@@ -1,5 +1,5 @@
+import HomePage from '@/features/home'
 import React from 'react'
-import HomePage from './features/home'
 
 const page = () => {
   return <HomePage />

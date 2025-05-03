@@ -2,25 +2,19 @@
 
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { axiosInstance } from "@/lib/axios";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { CalendarIcon, MapPin, Search } from "lucide-react";
 import Link from "next/link";
-import React, { FC, useEffect, useState } from "react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuTrigger,
-} from "../../../../../components/ui/dropdown-menu";
+import { FC } from "react";
+
 
 interface SearchBarProps {
   searchParams: string;

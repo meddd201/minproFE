@@ -20,7 +20,7 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
-} from "../../../../components/ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
 
 export function SearchBar() {
   const [searchParams, setSearchParams] = React.useState<string>("");

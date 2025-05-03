@@ -1,4 +1,4 @@
-import OrganizerEventDetailPage from "@/app/features/organization/eventDetail";
+import OrganizerEventDetailPage from "@/features/organization/eventDetail";
 
 const BlogDetail = async ({
   params,

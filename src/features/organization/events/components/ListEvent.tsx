@@ -4,9 +4,9 @@ import { Fan } from "lucide-react";
 import Image from "next/image";
 import { FC } from "react";
 import OrganizerEventCard from "./EventCard";
-import { PaginationComponent } from "../../../../../components/pagination";
 import Loading from "@/components/loading/loading";
 import ErrorComponent from "@/components/errorComponent";
+import { PaginationComponent } from "@/components/pagination";
 
 interface ListEventProps {
   events: PageableResponse<Event> | undefined;

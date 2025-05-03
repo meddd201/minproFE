@@ -1,7 +1,7 @@
 import React from "react";
-import RegisterOrganizerPage from "../features/register-organizer";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import RegisterOrganizerPage from "@/features/register-organizer";
 
 const RegisterOrganizer = async () => {
   const session = await auth();

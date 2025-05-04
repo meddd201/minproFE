@@ -20,6 +20,7 @@ import { CalendarIcon } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import * as Yup from "yup";
+import { useParams, useRouter } from "next/navigation";
 
 const validationSchema = Yup.object({
   name: Yup.string()
@@ -40,6 +41,7 @@ const validationSchema = Yup.object({
 export default function CreateEventPage() {
   const [eventStart, setEventStart] = useState<String>("");
   const [eventEnd, setEventEnd] = useState<string>("");
+  const router = useRouter();
 
   const { mutateAsync: createEvent, isPending } = useCreateEvent();
 
@@ -56,6 +58,9 @@ export default function CreateEventPage() {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       console.log(values);
+      const result = await createEvent(values); // Panggil API untuk membuat event
+      const eventId = result.data.id; // Ambil eventId dari respons backend
+      router.push(`/organization/create-event/step2/${eventId}`);
 
       await createEvent(values);
     },
@@ -126,7 +131,6 @@ export default function CreateEventPage() {
               <Select
                 onValueChange={(value) => {
                   formik.setFieldValue("category", value);
-                  
                 }}
               >
                 <SelectTrigger className="w-full">
@@ -134,7 +138,7 @@ export default function CreateEventPage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectLabel>Fruits</SelectLabel>
+                    <SelectLabel>Categories</SelectLabel>
                     <SelectItem value="Sports">Sports</SelectItem>
                     <SelectItem value="Concerts">Concerts</SelectItem>
                     <SelectItem value="Festivals">Festivals</SelectItem>
@@ -250,17 +254,16 @@ export default function CreateEventPage() {
 
             {/* Submit Button */}
 
-              <Button
-                disabled={isPending || !formik.isValid}
-                type="submit"
-                className="w-full bg-purple-600 hover:bg-purple-700"
-              >
-                Next
-              </Button>
+            <Button
+              disabled={isPending || !formik.isValid}
+              type="submit"
+              className="w-full bg-purple-600 hover:bg-purple-700"
+            >
+              Next
+            </Button>
           </form>
         </CardContent>
       </Card>
     </div>
   );
 }
-

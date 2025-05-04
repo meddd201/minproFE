@@ -44,6 +44,6 @@ export interface Event {
   //relation
   organizers?: any;
   eventVoucher?: EventVoucher[];
-  tickets?: Ticket[];
+  tickets?: ITicket[];
   usersEvents?: any;
 }

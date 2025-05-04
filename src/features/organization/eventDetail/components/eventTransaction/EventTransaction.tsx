@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
 import { format } from "date-fns";
 import Link from "next/link";
@@ -30,6 +30,7 @@ import useGetOrgDetailEvent from "@/hooks/api/events/useGetOrgDetailEvent";
 import useGetTransactionEvents from "@/hooks/api/transactions/useGetTransactionEvents";
 import formatRupiah from "@/utils/formatingRupiah";
 import EventTransactionChart from "./EventTransactionChart";
+import { useStoreOrgBack } from "@/stores/orderOrganizerBack";
 
 interface EventTransactionProps {
   eventId: string;
@@ -38,8 +39,8 @@ interface EventTransactionProps {
 const EventTransaction: FC<EventTransactionProps> = ({ eventId }) => {
   const {
     data: eventData,
-    isPending: eventPending,
-    error: eventError,
+    isPending: _eventPending,
+    error: _eventError,
   } = useGetOrgDetailEvent(eventId);
 
   const [searchUser, setSearchUser] = useState<string>("");
@@ -54,6 +55,11 @@ const EventTransaction: FC<EventTransactionProps> = ({ eventId }) => {
     ticket: searchTicket,
     sortOrder: "desc",
   });
+  const { changeRef } = useStoreOrgBack();
+  useEffect(() => {
+    changeRef(`/organization/events/${eventId}`);
+  }, []);
+
   const renderTickets = (tickets: { ticketName: string; quantity: number }[]) =>
     tickets.map((ticket) => (
       <div
@@ -94,7 +100,7 @@ const EventTransaction: FC<EventTransactionProps> = ({ eventId }) => {
         <TableCell>
           <Link
             className="hover:text-blue-500"
-            href={`/organization/transaction/${user.receiptNumber}`}
+            href={`/organization/transactions/${user.receiptNumber}`}
           >
             <Eye className="hover:scale-110" />
           </Link>

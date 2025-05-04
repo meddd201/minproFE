@@ -1,4 +1,5 @@
 import { EventVoucher } from "./eventsVoucher";
+import { Ticket } from "./ticket";
 
 export interface IEvent {
   id: string;

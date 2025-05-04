@@ -72,7 +72,7 @@ const EventTransactionChart: FC<EventTransactionChartProps> = ({ eventId }) => {
     hour: undefined,
     minute: undefined,
   });
-  const [dateFrom, setDateFrom] = useState<string>(new Date(new Date().setDate(new Date().getDate() - 1)).toISOString().split("T")[0]);
+  const [dateFrom, setDateFrom] = useState<string>(new Date(new Date().setDate(new Date().getDate())).toISOString().split("T")[0]);
 
   useEffect(() => {
     setXAxisLabel({
@@ -82,12 +82,12 @@ const EventTransactionChart: FC<EventTransactionChartProps> = ({ eventId }) => {
       minute: undefined,
     });
     if (timeRange === "1d") {
-      setDateFrom( new Date(new Date().setDate(new Date().getDate() - 1)).toISOString().split("T")[0]);
+      setDateFrom( new Date(new Date().setDate(new Date().getDate())).toISOString().split("T")[0]);
       setXAxisLabel({
         month: "short",
         day: "numeric",
-        hour: undefined,
-        minute: undefined,
+        hour: "2-digit",
+        minute: "2-digit",
       });
     } else if (timeRange === "7d") {
       setDateFrom( new Date(new Date().setDate(new Date().getDate() - 7)).toISOString().split("T")[0]);
@@ -101,14 +101,13 @@ const EventTransactionChart: FC<EventTransactionChartProps> = ({ eventId }) => {
   const { data: dataToDisplay, error } = useGetTransEventCharts(eventId, {
     datefrom: dateFrom,
   });
-
   return (
     <Card>
       <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
         <div className="grid flex-1 gap-1 text-center sm:text-left">
-          <CardTitle>Area Chart - Interactive</CardTitle>
+          <CardTitle>Transaction Charts</CardTitle>
           <CardDescription>
-            Showing total visitors for the last 3 months
+            Showing total transactions/tickets
           </CardDescription>
         </div>
         <Select value={timeRange} onValueChange={setTimeRange}>

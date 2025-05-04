@@ -15,7 +15,7 @@ const OrganizerEventDetailPage: FC<OrganizerEventDetailPageProps> = ({
 }) => {
   const { data: _eventData, isPending, error } = useGetOrgDetailEvent(eventId);
   if (isPending) {
-    return <Loading className="h-screen" />;
+    return <Loading className="h-screen min-h-[70vh]" />;
   }
   if (error) {
     redirect("/organization/events");

@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/table";
 import { CheckboxItem } from "@radix-ui/react-dropdown-menu";
 import { use, useState } from "react";
-import userCreateTicket from "@/hooks/api/events/userCreateTicket";
+import userCreateTicket from "@/hooks/api/events/useCreateTicket";
 import {
   Dialog,
   DialogContent,

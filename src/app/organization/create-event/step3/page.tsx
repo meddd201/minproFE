@@ -25,7 +25,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import useCreateVoucher from "@/hooks/api/events/userVoucherTicket";
+import useCreateVoucher from "@/hooks/api/events/userCreateVoucher";
 
 type Voucher = {
   name: string;

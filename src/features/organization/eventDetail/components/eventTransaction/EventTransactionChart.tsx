@@ -101,7 +101,6 @@ const EventTransactionChart: FC<EventTransactionChartProps> = ({ eventId }) => {
   const { data: dataToDisplay, error } = useGetTransEventCharts(eventId, {
     datefrom: dateFrom,
   });
-  console.log("dataToDisplay", dataToDisplay);
   return (
     <Card>
       <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">

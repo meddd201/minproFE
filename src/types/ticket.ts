@@ -1,4 +1,6 @@
-interface Ticket {
+import { Event } from "./events";
+
+export interface Ticket {
   id: string;
   eventId: string;
   name: string;
@@ -8,4 +10,5 @@ interface Ticket {
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
+  events?: Event;
 }

@@ -65,7 +65,7 @@ const OrganizerEventCard: FC<EventCardProps> = ({ event }) => {
               .toLowerCase()
               .replace(/\b\w/g, (char) => char.toUpperCase())}
           </Label>
-          <p className="text-muted-foreground mb-2 line-clamp-2 text-sm">
+          <p className="text-muted-foreground mb-2 line-clamp-1 text-sm">
             {event.description}
           </p>
           <div className="text-muted-foreground flex items-center text-sm">

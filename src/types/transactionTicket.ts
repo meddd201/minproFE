@@ -1,3 +1,5 @@
+import { Ticket } from "./ticket";
+
 export interface TransactionTicket {
   id: string;
   transactionId: string;
@@ -6,4 +8,5 @@ export interface TransactionTicket {
   price: number;
   createdAt: string;
   deletedAt: string | null;
+  tickets?: Ticket;
 }

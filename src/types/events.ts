@@ -1,4 +1,5 @@
 import { EventVoucher } from "./eventsVoucher";
+import { Ticket } from "./ticket";
 
 export interface IEvent {
   id: string;
@@ -44,6 +45,6 @@ export interface Event {
   //relation
   organizers?: any;
   eventVoucher?: EventVoucher[];
-  tickets?: ITicket[];
+  tickets?: Ticket[];
   usersEvents?: any;
 }

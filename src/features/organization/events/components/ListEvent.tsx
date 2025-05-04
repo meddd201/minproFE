@@ -17,7 +17,7 @@ interface ListEventProps {
 
 const ListEvent: FC<ListEventProps> = ({ events, loading, error, setpage }) => {
   if (loading) {
-    return <Loading className="container mx-auto" />;
+    return <Loading className="container mx-auto min-h-[70vh]" />;
   }
   if (error || !events) {
     return (
@@ -45,7 +45,7 @@ const ListEvent: FC<ListEventProps> = ({ events, loading, error, setpage }) => {
   }
   return (
     <section className="container mx-auto my-10 min-h-[60vh] p-4">
-      <div className="mb-10 grid grid-cols-1 gap-4 sm:grid-cols-2 md:px-20 lg:grid-cols-3">
+      <div className="mb-10 grid grid-cols-1 gap-4 sm:grid-cols-2 md:px-20 lg:grid-cols-4">
         {events.data?.map((event) => (
           <OrganizerEventCard key={event.id} event={event} />
         ))}

@@ -28,7 +28,7 @@ export const PaginationComponent: FC<PaginationComponentProps> = (page) => {
     }
   };
   return (
-    <Pagination>
+    <Pagination className="mb-8 mt-4">
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious onClick={handlePreviousPage} />

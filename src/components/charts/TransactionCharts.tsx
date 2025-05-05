@@ -25,7 +25,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import useGetTransEventCharts from "@/hooks/api/transactions/useGetTransEventCharts";
-import { FC, useEffect, useState } from "react";
+import { FC, use, useEffect, useState } from "react";
+import { TransactionByDate } from "@/types/charts";
+import { formatStatus } from "@/utils/formatingStatus";
 
 const chartConfig = {
   WAITING_FOR_PAYMENT: {
@@ -62,17 +64,25 @@ interface XAxisLabel {
 }
 
 interface EventTransactionChartProps {
-  eventId: string;
+  eventId?: string | undefined;
 }
-const EventTransactionChart: FC<EventTransactionChartProps> = ({ eventId }) => {
+
+const TransactionChart: FC<EventTransactionChartProps> = ({
+  eventId,
+}) => {
   const [timeRange, setTimeRange] = useState("1d");
+  const [DataType, setDataType] = useState("Transaction");
   const [XAxisLabel, setXAxisLabel] = useState<XAxisLabel>({
     month: "short",
     day: "numeric",
     hour: undefined,
     minute: undefined,
   });
-  const [dateFrom, setDateFrom] = useState<string>(new Date(new Date().setDate(new Date().getDate())).toISOString().split("T")[0]);
+  const [dateFrom, setDateFrom] = useState<string>(
+    new Date(new Date().setDate(new Date().getDate()))
+      .toISOString()
+      .split("T")[0],
+  );
 
   useEffect(() => {
     setXAxisLabel({
@@ -82,7 +92,11 @@ const EventTransactionChart: FC<EventTransactionChartProps> = ({ eventId }) => {
       minute: undefined,
     });
     if (timeRange === "1d") {
-      setDateFrom( new Date(new Date().setDate(new Date().getDate())).toISOString().split("T")[0]);
+      setDateFrom(
+        new Date(new Date().setDate(new Date().getDate()))
+          .toISOString()
+          .split("T")[0],
+      );
       setXAxisLabel({
         month: "short",
         day: "numeric",
@@ -90,26 +104,84 @@ const EventTransactionChart: FC<EventTransactionChartProps> = ({ eventId }) => {
         minute: "2-digit",
       });
     } else if (timeRange === "7d") {
-      setDateFrom( new Date(new Date().setDate(new Date().getDate() - 7)).toISOString().split("T")[0]);
+      setDateFrom(
+        new Date(new Date().setDate(new Date().getDate() - 7))
+          .toISOString()
+          .split("T")[0],
+      );
     } else if (timeRange === "30d") {
-      setDateFrom( new Date(new Date().setDate(new Date().getDate() - 30)).toISOString().split("T")[0]);
+      setDateFrom(
+        new Date(new Date().setDate(new Date().getDate() - 30))
+          .toISOString()
+          .split("T")[0],
+      );
+    } else if (timeRange === "1yr") {
+      setDateFrom(
+        new Date(new Date().setFullYear(new Date().getFullYear() - 1))
+          .toISOString()
+          .split("T")[0],
+      );
     } else {
-      setDateFrom( "");
+      setDateFrom("");
     }
   }, [timeRange]);
 
-  const { data: dataToDisplay, error } = useGetTransEventCharts(eventId, {
+  const { data: dataToDisplay, error } = useGetTransEventCharts({
     datefrom: dateFrom,
+    eventid: eventId,
   });
+
+  const generateTotalData = () => {
+    if (!dataToDisplay) return null;
+
+    const totalData =
+      DataType === "Ticket"
+        ? dataToDisplay.data.totalTickets
+        : dataToDisplay.data.totalTransactions;
+
+    return Object.keys(totalData).map((key) => {
+      if (key !== "date") {
+        return (
+          <Card
+            key={key}
+            className="flex grow flex-row items-center justify-between p-0 px-2"
+          >
+            <div className="text-xs font-medium">{formatStatus(key)}</div>
+            <div className="text-muted-foreground text-sm">
+              {totalData[key as keyof TransactionByDate]}
+            </div>
+          </Card>
+        );
+      }
+      return null;
+    });
+  };
+
   return (
-    <Card>
-      <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
+    <Card className="mb-5">
+      <CardHeader className="flex flex-col items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
         <div className="grid flex-1 gap-1 text-center sm:text-left">
           <CardTitle>Transaction Charts</CardTitle>
           <CardDescription>
-            Showing total transactions/tickets
+            Showing total transactions/tickets by selected event
           </CardDescription>
         </div>
+        <Select value={DataType} onValueChange={setDataType}>
+          <SelectTrigger
+            className="w-[160px] rounded-lg sm:ml-auto"
+            aria-label="Select a value"
+          >
+            <SelectValue placeholder="Last 3 months" />
+          </SelectTrigger>
+          <SelectContent className="rounded-xl">
+            <SelectItem value="Transaction" className="rounded-lg">
+              Transaction
+            </SelectItem>
+            <SelectItem value="Ticket" className="rounded-lg">
+              Ticket
+            </SelectItem>
+          </SelectContent>
+        </Select>
         <Select value={timeRange} onValueChange={setTimeRange}>
           <SelectTrigger
             className="w-[160px] rounded-lg sm:ml-auto"
@@ -118,8 +190,11 @@ const EventTransactionChart: FC<EventTransactionChartProps> = ({ eventId }) => {
             <SelectValue placeholder="Last 3 months" />
           </SelectTrigger>
           <SelectContent className="rounded-xl">
-            <SelectItem value="90d" className="rounded-lg">
-              Last 3 months
+            <SelectItem value="all" className="rounded-lg">
+              All
+            </SelectItem>
+            <SelectItem value="1yr" className="rounded-lg">
+              This Year
             </SelectItem>
             <SelectItem value="30d" className="rounded-lg">
               Last 30 days
@@ -133,12 +208,18 @@ const EventTransactionChart: FC<EventTransactionChartProps> = ({ eventId }) => {
           </SelectContent>
         </Select>
       </CardHeader>
-      <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
+      <CardContent className="flex flex-col gap-2 px-2 pt-4 sm:flex-row sm:px-6 sm:pt-6">
         <ChartContainer
           config={chartConfig}
-          className="aspect-auto h-[250px] w-full"
+          className="aspect-auto h-[250px] w-full rounded-xl border"
         >
-          <AreaChart data={dataToDisplay?.data.transactions}>
+          <AreaChart
+            data={
+              DataType === "Ticket"
+                ? dataToDisplay?.data.tickets
+                : dataToDisplay?.data.transactions
+            }
+          >
             <defs>
               <linearGradient id="fillReject" x1="0" y1="0" x2="0" y2="1">
                 <stop
@@ -225,11 +306,11 @@ const EventTransactionChart: FC<EventTransactionChartProps> = ({ eventId }) => {
                 />
               </linearGradient>
             </defs>
-            <CartesianGrid vertical={false} />
+            <CartesianGrid vertical={true} />
             <XAxis
               dataKey="date"
-              tickLine={false}
-              axisLine={false}
+              tickLine={true}
+              axisLine={true}
               tickMargin={8}
               minTickGap={32}
               tickFormatter={(value) => {
@@ -253,52 +334,56 @@ const EventTransactionChart: FC<EventTransactionChartProps> = ({ eventId }) => {
             />
             <Area
               dataKey="EXPIRED"
-              type="natural"
+              type="step"
               fill="url(#fillExpired)"
               stroke="var(--color-EXPIRED)"
               stackId="a"
             />
             <Area
               dataKey="REJECTED"
-              type="natural"
+              type="step"
               fill="url(#fillReject)"
               stroke="var(--color-REJECTED)"
               stackId="a"
             />
             <Area
               dataKey="WAITING_FOR_PAYMENT"
-              type="natural"
+              type="step"
               fill="url(#fillWaitingForPayment)"
               stroke="var(--color-WAITING_FOR_PAYMENT)"
               stackId="a"
             />
             <Area
               dataKey="WAITING_FOR_ADMIN_CONFIRMATION"
-              type="natural"
+              type="step"
               fill="url(#fillWaitingForAdminConfirmation)"
               stroke="var(--color-WAITING_FOR_ADMIN_CONFIRMATION)"
               stackId="a"
             />
             <Area
               dataKey="DONE"
-              type="natural"
+              type="step"
               fill="url(#fillDone)"
               stroke="var(--color-DONE)"
               stackId="a"
             />
             <Area
               dataKey="CANCELED"
-              type="natural"
+              type="step"
               fill="url(#fillCanceled)"
               stroke="var(--color-CANCELED)"
               stackId="a"
             />
-            <ChartLegend content={<ChartLegendContent />} />
+            <ChartLegend
+              className="grid justify-around gap-0 sm:flex sm:gap-2"
+              content={<ChartLegendContent />}
+            />
           </AreaChart>
         </ChartContainer>
+        <div className="grid gap-2">{generateTotalData()}</div>
       </CardContent>
     </Card>
   );
 };
 
-export default EventTransactionChart;
+export default TransactionChart;

@@ -1,8 +1,9 @@
+"use client";
 import React, { FC, useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
 import { format } from "date-fns";
 import Link from "next/link";
-import { Eye } from "lucide-react";
+import { ChevronDown, Eye } from "lucide-react";
 
 import Loading from "@/components/loading/loading";
 import { PaginationComponent } from "@/components/pagination";
@@ -29,36 +30,60 @@ import ErrorComponent from "@/components/errorComponent";
 import useGetOrgDetailEvent from "@/hooks/api/events/useGetOrgDetailEvent";
 import useGetTransactionEvents from "@/hooks/api/transactions/useGetTransactionEvents";
 import formatRupiah from "@/utils/formatingRupiah";
-import EventTransactionChart from "./EventTransactionChart";
+
 import { useStoreOrgBack } from "@/stores/orderOrganizerBack";
+import TransactionChart from "@/components/charts/TransactionCharts";
+import TotalIncome from "@/components/charts/TotalIncome";
+import { parseAsInteger, useQueryState } from "nuqs";
+import { formatStatus } from "@/utils/formatingStatus";
+import { TransactionStatus } from "@/types/transaction";
 
 interface EventTransactionProps {
   eventId: string;
 }
 
-const EventTransaction: FC<EventTransactionProps> = ({ eventId }) => {
+const EventTransactionsPage: FC<EventTransactionProps> = ({ eventId }) => {
   const {
     data: eventData,
     isPending: _eventPending,
     error: _eventError,
   } = useGetOrgDetailEvent(eventId);
-
-  const [searchUser, setSearchUser] = useState<string>("");
+  const [searchUser, setSearchUser] = useQueryState("search", {
+    defaultValue: "",
+  });
   const [debounceSearchUser] = useDebounce(searchUser, 500);
-  const [searchTicket, setSearchTicket] = useState<string>("");
-  const [page, setPage] = useState<number>(1);
-  const { data, isPending, error } = useGetTransactionEvents(eventId, {
+  const [searchTicket, setSearchTicket] = useQueryState("ticket", {
+    defaultValue: "",
+  });
+  const [searchEvent, setSearchEvent] = useQueryState("event", {
+    defaultValue: "",
+  });
+  const [searchStatus, setSearchStatus] = useQueryState("status", {
+    defaultValue: "",
+  });
+  const [page, setPage] = useQueryState("page", parseAsInteger.withDefault(1));
+  const { data, isPending, error } = useGetTransactionEvents({
     page,
     take: 10,
     date: "",
     search: debounceSearchUser,
     ticket: searchTicket,
     sortOrder: "desc",
+    eventid: searchEvent,
+    status: searchStatus,
   });
+
   const { changeRef } = useStoreOrgBack();
   useEffect(() => {
-    changeRef(`/organization/events/${eventId}`);
+    changeRef(`/organization/events/${eventId}/transactions`);
   }, []);
+  useEffect(() => {
+    changeRef(`/organization/transactions`);
+  }, []);
+
+  useEffect(() => {
+    setPage(1);
+  }, [searchUser, searchTicket, searchStatus]);
 
   const renderTickets = (tickets: { ticketName: string; quantity: number }[]) =>
     tickets.map((ticket) => (
@@ -110,9 +135,10 @@ const EventTransaction: FC<EventTransactionProps> = ({ eventId }) => {
 
   return (
     <section className="container mx-auto mt-10 w-full items-center justify-center px-4">
-      <EventTransactionChart eventId={eventId} />
-      <div className="mb-4 flex w-full flex-row gap-2">
-        <div className="relative flex max-w-[300px] grow flex-col">
+      <TransactionChart eventId={eventId} />
+      <TotalIncome eventId={eventId} className="mb-8" />
+      <div className="mb-4 grid w-full gap-2 sm:flex sm:flex-row">
+        <div className="relative flex grow flex-col sm:max-w-[300px]">
           <Label className="pl-2 text-sm font-semibold text-gray-700">
             Search User
           </Label>
@@ -124,18 +150,16 @@ const EventTransaction: FC<EventTransactionProps> = ({ eventId }) => {
             onChange={(e) => setSearchUser(e.target.value)}
           />
         </div>
-        <div className="flex flex-col">
+        <div className="flex grow flex-col md:max-w-[200px]">
           <Label className="pl-2 text-sm font-semibold text-gray-700">
             Ticket Type
           </Label>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button
-                variant="outline"
-                className="text-muted-foreground grow text-sm"
-              >
+              <div className="text-muted-foreground relative grow cursor-pointer rounded-md border bg-white p-2 text-sm">
                 {searchTicket || "All"}
-              </Button>
+                <ChevronDown className="absolute top-0 right-2 h-full" />
+              </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent side="bottom" className="flex w-full">
               <DropdownMenuRadioGroup>
@@ -158,6 +182,38 @@ const EventTransaction: FC<EventTransactionProps> = ({ eventId }) => {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
+        <div className="flex min-w-[100px] flex-col md:max-w-[300px]">
+          <Label className="pl-2 text-sm font-semibold text-gray-700">
+            Status
+          </Label>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <div className="text-muted-foreground relative grow cursor-pointer rounded-md border bg-white p-2 pr-8 text-sm">
+                {formatStatus(searchStatus) || "All"}
+                <ChevronDown className="absolute top-0 right-2 h-full" />
+              </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent side="bottom" className="flex w-full">
+              <DropdownMenuRadioGroup className="w-[80vw] md:w-[200px]">
+                <DropdownMenuRadioItem
+                  onClick={() => setSearchStatus("")}
+                  value=""
+                >
+                  All
+                </DropdownMenuRadioItem>
+                {Object.values(TransactionStatus).map((status) => (
+                  <DropdownMenuRadioItem
+                    onClick={() => setSearchStatus(status)}
+                    key={status}
+                    value={status}
+                  >
+                    {formatStatus(status)}
+                  </DropdownMenuRadioItem>
+                ))}
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
 
       {error && (
@@ -167,11 +223,11 @@ const EventTransaction: FC<EventTransactionProps> = ({ eventId }) => {
         />
       )}
       {isPending && (
-        <Loading className="container mx-auto mt-10 w-full items-center justify-center px-4" />
+        <Loading className="container mx-auto mt-10 min-h-[70vh] w-full items-center justify-center px-4" />
       )}
 
       {!isPending && !error && (
-        <div>
+        <div className="min-h-[50vh] w-full items-center justify-center">
           <div className="my-2 rounded-md border">
             <Table>
               <TableHeader>
@@ -199,4 +255,4 @@ const EventTransaction: FC<EventTransactionProps> = ({ eventId }) => {
   );
 };
 
-export default EventTransaction;
+export default EventTransactionsPage;

@@ -4,33 +4,28 @@ import useAxios from "@/hooks/useAxios";
 import { TransactionByDate } from "@/types/charts";
 import { useQuery } from "@tanstack/react-query";
 
-interface GetTransEventChartsQuery {
-  datefrom?: string;
+interface GetIncomeQuery {
   eventid?: string;
 }
 
 interface GetTransEventChartResponse {
   data: {
-    transactions: TransactionByDate[];
-    tickets: TransactionByDate[];
-    totalTransactions: TransactionByDate;
-    totalTickets: TransactionByDate;
+    totalIncome: number;
+    totalIncomeBeforeDiscount: number;
   };
   message: string;
 }
-const useGetTransEventCharts = (
-  queries: GetTransEventChartsQuery,
-) => {
+const useGetIncome = (queries: GetIncomeQuery) => {
   const { axiosInstance } = useAxios();
   return useQuery({
-    queryKey: ["transactioneventchart", queries],
+    queryKey: ["transactionincome", queries],
     queryFn: async () => {
       const { data } = await axiosInstance.get<GetTransEventChartResponse>(
-        `transactions/chart`,
+        `transactions/income`,
         { params: queries },
       );
       return data;
     },
   });
 };
-export default useGetTransEventCharts;
+export default useGetIncome;

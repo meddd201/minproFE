@@ -22,7 +22,6 @@ export type Ticket = {
 interface TicketDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit?: (values: Ticket) => void;
   ticketData?: Ticket;
   eventId: string;
 }
@@ -39,11 +38,7 @@ const TicketDialog: FC<TicketDialogProps> = ({
   ticketData,
   eventId,
 }) => {
-  const {
-    mutateAsync: createTicket,
-    isPending,
-    isSuccess,
-  } = useCreateTicket(eventId);
+  const { mutateAsync: createTicket, isPending } = useCreateTicket(eventId);
 
   const formik = useFormik({
     initialValues: {

@@ -32,17 +32,9 @@ interface StepTwoIDPageProps {
 }
 
 const StepTwoIDPage: FC<StepTwoIDPageProps> = ({ eventid }) => {
-  // ambil data dari event idnya
   const { data: NewData, isPending, error } = useGetOrgDetailEvent(eventid);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const handleSubmit = () => {
-    // Handle ticket submission (either add or edit ticket logic)
-    console.log("Ticket added successfully");
-    setIsDialogOpen(false); // Close dialog after submit
-  };
-
-  //
   if (isPending)
     return <Loading className="container mx-auto h-[100vh] items-center" />;
 
@@ -60,7 +52,7 @@ const StepTwoIDPage: FC<StepTwoIDPageProps> = ({ eventid }) => {
             <h2 className="text-xl font-semibold">Ticket Types</h2>
             <Button
               className="bg-purple-600 hover:bg-purple-700"
-              onClick={() => setIsDialogOpen(true)} // Open dialog when clicked
+              onClick={() => setIsDialogOpen(true)}
             >
               Add Ticket
             </Button>
@@ -129,7 +121,6 @@ const StepTwoIDPage: FC<StepTwoIDPageProps> = ({ eventid }) => {
             >
               <Button
                 disabled={isPending || NewData.data.tickets.length < 1}
-                // onClick={handleSaveAll}
                 className="bg-green-600 hover:bg-green-700"
               >
                 Save & Continue
@@ -142,7 +133,6 @@ const StepTwoIDPage: FC<StepTwoIDPageProps> = ({ eventid }) => {
       <TicketDialog
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
-        onSubmit={handleSubmit}
         eventId={eventid}
       />
     </section>

@@ -3,6 +3,7 @@
 import { cn } from "@/lib/utils";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import Underline from "@tiptap/extension-underline";
 import { FC } from "react";
 import TiptapMenuBar from "./TiptapMenuBar";
 import { Label } from "./ui/label";
@@ -29,13 +30,13 @@ const TiptapRichtextEditor: FC<TiptapRichtextEditorProps> = ({
   showError,
 }) => {
   const editor = useEditor({
-    extensions: [StarterKit],
+    extensions: [StarterKit, Underline],
     content: content,
     editorProps: {
       attributes: {
         class: cn(
           "prose dark:prose-invert", // @tailwindcss/typography plugin
-          "border rounded-b-md", 
+          "border rounded-b-md",
           "p-3", // padding
           "leading-[1.4] min-h-[156px] max-w-none", // height, width and line height
         ),
@@ -57,7 +58,7 @@ const TiptapRichtextEditor: FC<TiptapRichtextEditorProps> = ({
       <Label className="my-2">{label}</Label>
       <TiptapMenuBar editor={editor} />
       <EditorContent editor={editor} />
-      {editor?.isEmpty && isTouch && showError&& (
+      {editor?.isEmpty && isTouch && showError && (
         <p className="text-md text-red-500">{label} is Required</p>
       )}
     </div>

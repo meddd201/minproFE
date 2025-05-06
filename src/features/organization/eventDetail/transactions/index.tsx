@@ -55,9 +55,7 @@ const EventTransactionsPage: FC<EventTransactionProps> = ({ eventId }) => {
   const [searchTicket, setSearchTicket] = useQueryState("ticket", {
     defaultValue: "",
   });
-  const [searchEvent, setSearchEvent] = useQueryState("event", {
-    defaultValue: "",
-  });
+
   const [searchStatus, setSearchStatus] = useQueryState("status", {
     defaultValue: "",
   });
@@ -69,16 +67,13 @@ const EventTransactionsPage: FC<EventTransactionProps> = ({ eventId }) => {
     search: debounceSearchUser,
     ticket: searchTicket,
     sortOrder: "desc",
-    eventid: searchEvent,
+    eventid: eventId,
     status: searchStatus,
   });
 
   const { changeRef } = useStoreOrgBack();
   useEffect(() => {
     changeRef(`/organization/events/${eventId}/transactions`);
-  }, []);
-  useEffect(() => {
-    changeRef(`/organization/transactions`);
   }, []);
 
   useEffect(() => {
@@ -105,13 +100,7 @@ const EventTransactionsPage: FC<EventTransactionProps> = ({ eventId }) => {
           {user.username}
         </TableCell>
         <TableCell className="flex w-[100px] break-words whitespace-pre-wrap">
-          {user.status
-            .split("_")
-            .map(
-              (word) =>
-                word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
-            )
-            .join(" ")}
+          {formatStatus(user.status)}
         </TableCell>
         <TableCell>
           <div className="flex flex-col gap-2">

@@ -49,8 +49,8 @@ const TiptapMenuBar: FC<TiptapMenuBarProps> = ({ editor }) => {
       pressed: editor.isActive("strike"),
     },
     {
-      icon: <List className="size-4" />,
-      onclick: () => editor.chain().focus().toggleBulletList().run(),
+      icon: <Underline className="size-4" />,
+      onclick: () => editor.chain().focus().toggleUnderline().run(),
       pressed: editor.isActive("underline"),
     },
   ];

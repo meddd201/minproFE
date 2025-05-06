@@ -4,15 +4,6 @@ import Loading from "@/components/loading/loading";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import {
   Table,
   TableBody,
   TableCell,
@@ -21,48 +12,46 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import useGetOrgDetailEvent from "@/hooks/api/events/useGetOrgDetailEvent";
-import { redirect } from "next/navigation";
-import { FC, useState } from "react";
-import TicketDialog from "./components/StepTwoDialog";
 import formatRupiah from "@/utils/formatingRupiah";
+import { log } from "console";
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import React, { FC, useState } from "react";
+import VoucherDialog from "./components/StepThreeDialog";
 
-interface StepTwoIDPageProps {
-  eventid: string;
+interface StepThreePageProps {
+  eventId: string;
 }
 
-const StepTwoIDPage: FC<StepTwoIDPageProps> = ({ eventid }) => {
-  // ambil data dari event idnya
-  const { data: NewData, isPending, error } = useGetOrgDetailEvent(eventid);
+const StepThreePage: FC<StepThreePageProps> = ({ eventId }) => {
+  const { data: NewVoucher, isPending, error } = useGetOrgDetailEvent(eventId);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const handleSubmit = () => {
-    // Handle ticket submission (either add or edit ticket logic)
-    console.log("Ticket added successfully");
-    setIsDialogOpen(false); // Close dialog after submit
+    console.log("Voucher added successfully");
+    setIsDialogOpen(false);
   };
 
-  //
   if (isPending)
     return <Loading className="container mx-auto h-[100vh] items-center" />;
 
   if (error) return redirect("/organization");
-
   return (
     <section className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
-      <div className="mb-8 text-center">
-        <h1 className="mb-6 text-2xl font-bold">Create Tickets for Event</h1>
-        <p className="text-muted-foreground mb-4">Event ID: {eventid}</p>
+      <div className="text center mb-8">
+        <h1 className="mb-6 text-2xl font-bold"> Create Voucher for Event</h1>
+        <p className="text-muted-foreground mb-4"> Event ID: {eventId}</p>
       </div>
+
       <Card>
         <CardContent className="space-y-6 pt-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold">Ticket Types</h2>
+            <h2 className="text-xl font-semibold">Voucher Types</h2>
             <Button
               className="bg-purple-600 hover:bg-purple-700"
-              onClick={() => setIsDialogOpen(true)} // Open dialog when clicked
+              onClick={() => setIsDialogOpen(true)}
             >
-              Add Ticket
+              Add Voucher
             </Button>
           </div>
 
@@ -71,22 +60,26 @@ const StepTwoIDPage: FC<StepTwoIDPageProps> = ({ eventid }) => {
               <TableHeader>
                 <TableRow>
                   <TableHead>Name</TableHead>
-                  <TableHead>Price</TableHead>
+                  <TableHead>Amount Discount</TableHead>
                   <TableHead>Qty</TableHead>
+                  <TableHead>Start Date</TableHead>
+                  <TableHead>End Date</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {NewData.data!.tickets!.length > 0 ? (
-                  NewData.data!.tickets!.map((ticket, index) => (
+                {NewVoucher.data!.eventVoucher!.length > 0 ? (
+                  NewVoucher.data!.eventVoucher!.map((voucher, index) => (
                     <TableRow key={index}>
-                      <TableCell>{ticket.name}</TableCell>
+                      <TableCell>{voucher.name}</TableCell>
                       <TableCell>
-                        {ticket.price === 0
-                          ? "Free"
-                          : `${formatRupiah(ticket.price)}`}
+                        {voucher.amountDiscount === 0
+                          ? "Not usable"
+                          : `${formatRupiah(voucher.amountDiscount)}`}
                       </TableCell>
-                      <TableCell>{ticket.amount}</TableCell>
+                      <TableCell>{voucher.quota}</TableCell>
+                      <TableCell>{voucher.startDate}</TableCell>
+                      <TableCell>{voucher.endDate}</TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
                           {/* <Button
@@ -114,7 +107,7 @@ const StepTwoIDPage: FC<StepTwoIDPageProps> = ({ eventid }) => {
                       colSpan={4}
                       className="text-muted-foreground text-center"
                     >
-                      No tickets yet. Click "Add Ticket" to create one.
+                      No vouchers yet. Click "Add Voucher" to create one.
                     </TableCell>
                   </TableRow>
                 )}
@@ -122,31 +115,34 @@ const StepTwoIDPage: FC<StepTwoIDPageProps> = ({ eventid }) => {
             </Table>
           </div>
 
-          {NewData.data.tickets && NewData.data.tickets.length > 0 && (
-            <Link
-              href={`/organization/step3/${eventid}`}
-              className="flex justify-end pt-4"
-            >
-              <Button
-                disabled={isPending || NewData.data.tickets.length < 1}
-                // onClick={handleSaveAll}
-                className="bg-green-600 hover:bg-green-700"
+          {NewVoucher.data.eventVoucher &&
+            NewVoucher.data.eventVoucher.length > 0 && (
+              <Link
+                href={`/organization/step3/${eventId}`} //ini seharusnya langsung publishh
+                className="flex justify-end pt-4"
               >
-                Save & Continue
-              </Button>
-            </Link>
-          )}
+                <Button
+                  disabled={
+                    isPending || NewVoucher.data.eventVoucher.length < 1
+                  }
+                  // onClick={handleSaveAll}
+                  className="bg-green-600 hover:bg-green-700"
+                >
+                  Save & Publish
+                </Button>
+              </Link>
+            )}
         </CardContent>
       </Card>
 
-      <TicketDialog
+      <VoucherDialog
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
         onSubmit={handleSubmit}
-        eventId={eventid}
+        eventId={eventId}
       />
     </section>
   );
 };
 
-export default StepTwoIDPage;
+export default StepThreePage;

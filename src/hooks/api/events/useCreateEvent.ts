@@ -53,7 +53,7 @@ const useCreateEvent = () => {
       await queryClient.invalidateQueries({
         queryKey: ["organizerEvent", data.data.id],
       });
-      router.push(`/organization/create-event/step2?eventId=${data.data.id}`);
+      router.push(`/organization/create-event/step2/${data.data.id}`);
     },
     onError: (error: AxiosError<{ message: string; code: number }>) => {
       toast.error(error.response?.data.message || "Something went wrong");

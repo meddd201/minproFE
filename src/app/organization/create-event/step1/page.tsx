@@ -59,7 +59,7 @@ export default function CreateEventPage() {
     onSubmit: async (values) => {
       const result = await createEvent(values); // Panggil API untuk membuat event
       const eventId = result.data.id; // Ambil eventId dari respons backend
-      router.push(`/organization/create-event/step2`);
+      // router.push(`/organization/create-event/step2`);
 
       await createEvent(values);
     },

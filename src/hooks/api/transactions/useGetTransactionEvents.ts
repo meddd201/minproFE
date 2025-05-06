@@ -13,19 +13,20 @@ interface GetTransactionEventQuery {
   page?: number;
   take?: number;
   sortOrder?: string;
+  eventid?: string;
+  status?: string;
 }
 
 const useGetTransactionEvents = (
-  eventid: string,
   queries: GetTransactionEventQuery,
 ) => {
   const { axiosInstance } = useAxios();
   return useQuery({
-    queryKey: ["transactionevent", eventid, queries],
+    queryKey: ["transactionevent", queries],
     queryFn: async () => {
       const { data } = await axiosInstance.get<
         PageableResponse<TransactionOverview>
-      >(`transactions/${eventid}`, { params: queries });
+      >(`transactions/organizer`, { params: queries });
       return data;
     },
   });

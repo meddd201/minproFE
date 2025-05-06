@@ -57,7 +57,6 @@ export default function CreateEventPage() {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      console.log(values);
       const result = await createEvent(values); // Panggil API untuk membuat event
       const eventId = result.data.id; // Ambil eventId dari respons backend
       router.push(`/organization/create-event/step2`);

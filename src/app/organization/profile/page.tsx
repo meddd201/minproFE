@@ -1,9 +1,7 @@
-import React from 'react'
+import OrganizerProfilePage from "@/features/organization/profile";
 
-const page = () => {
-  return (
-    <div>page</div>
-  )
-}
+const OrganizerProfile = () => {
+  return <OrganizerProfilePage />;
+};
 
-export default page
+export default OrganizerProfile;

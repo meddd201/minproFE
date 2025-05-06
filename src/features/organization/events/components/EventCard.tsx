@@ -1,10 +1,12 @@
 "use client";
 
+import CardMarkdown from "@/components/CardMarkdown";
+import Markdown from "@/components/Markdown";
 import { Badge } from "@/components/ui/badge";
 import { Event } from "@/types/events";
 import { Label } from "@radix-ui/react-dropdown-menu";
 import { format } from "date-fns";
-import { CalendarDays, MapPin } from "lucide-react";
+import { CalendarArrowDown, CalendarDays, MapPin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { FC } from "react";
@@ -65,14 +67,16 @@ const OrganizerEventCard: FC<EventCardProps> = ({ event }) => {
               .toLowerCase()
               .replace(/\b\w/g, (char) => char.toUpperCase())}
           </Label>
-          <p className="text-muted-foreground mb-2 line-clamp-1 text-sm">
-            {event.description}
-          </p>
+          <div className="text-muted-foreground mb-2 line-clamp-1 text-sm">
+            <CardMarkdown content={event.description} />
+          </div>
           <div className="text-muted-foreground flex items-center text-sm">
             <CalendarDays size={16} className="m-1" />
-            <span>
-              {formattedEventStart} - {formattedEventEnd}
-            </span>
+            <span>{formattedEventStart}</span>
+          </div>
+          <div className="text-muted-foreground flex items-center text-sm">
+            <CalendarArrowDown size={16} className="m-1" />
+            <span>{formattedEventEnd}</span>
           </div>
           <div className="text-muted-foreground flex items-center text-sm">
             <MapPin size={16} className="m-1" />

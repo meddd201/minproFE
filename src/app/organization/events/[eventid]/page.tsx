@@ -1,6 +1,6 @@
 import OrganizerEventDetailPage from "@/features/organization/eventDetail";
 
-const BlogDetail = async ({
+const OrganizerEventDetail = async ({
   params,
 }: {
   params: Promise<{ eventid: string }>;
@@ -9,4 +9,4 @@ const BlogDetail = async ({
   return <OrganizerEventDetailPage eventId={id} />;
 };
 
-export default BlogDetail;
+export default OrganizerEventDetail;

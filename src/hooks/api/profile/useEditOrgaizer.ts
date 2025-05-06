@@ -1,12 +1,12 @@
 import { axiosInstance } from "@/lib/axios";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 const useEditOrgaizer = () => {
   const router = useRouter();
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (payload: {
       name: string;
@@ -29,8 +29,9 @@ const useEditOrgaizer = () => {
       );
       return data;
     },
-    onSuccess: async(data) => {
+    onSuccess: async (data) => {
       toast.success(data.message || "Registration Organizer successful");
+      await queryClient.invalidateQueries({ queryKey: ["organizerprofile"] });
       router.push("/organization/profile");
     },
     onError: (error: AxiosError<{ message: string; code: number }>) => {

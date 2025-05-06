@@ -17,7 +17,6 @@ const OrganizerProfilePage = () => {
     return (
       <ErrorComponent className="container mx-auto flex h-[100vh] items-center justify-center" />
     );
-  console.log(data);
   return (
     <main className="min-h-screen">
       <section className="container m-8 mx-auto ">

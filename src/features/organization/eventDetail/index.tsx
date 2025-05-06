@@ -31,7 +31,6 @@ const OrganizerEventDetailPage: FC<OrganizerEventDetailPageProps> = ({
   eventId,
 }) => {
   const { data: eventData, isPending, error } = useGetOrgDetailEvent(eventId);
-  console.log("eventData", eventData);
   if (error) {
     return (
       <ErrorComponent message={error.message ? error.message : "not Found"} />

@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import useCreateTicket from "@/hooks/api/events/useCreateTicket";
 import useCreateVoucher from "@/hooks/api/events/useCreateVoucher";
 import { CalendarIcon } from "lucide-react";
 import { start } from "repl";

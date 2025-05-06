@@ -23,7 +23,7 @@ const useCreateVoucher = (eventId: string) => {
       return data;
     },
     onSuccess: async (data) => {
-      toast.success(data.message || "Create Ticket successful");
+      toast.success(data.message || "Create Voucher successful");
       await queryClient.refetchQueries({
         queryKey: ["organizerEvent", eventId],
       })

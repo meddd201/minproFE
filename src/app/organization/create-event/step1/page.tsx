@@ -60,7 +60,7 @@ export default function CreateEventPage() {
       console.log(values);
       const result = await createEvent(values); // Panggil API untuk membuat event
       const eventId = result.data.id; // Ambil eventId dari respons backend
-      router.push(`/organization/create-event/step2/${eventId}`);
+      router.push(`/organization/create-event/step2`);
 
       await createEvent(values);
     },
@@ -134,7 +134,7 @@ export default function CreateEventPage() {
                 }}
               >
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select a fruit" />
+                  <SelectValue placeholder="Select a category" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>

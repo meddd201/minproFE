@@ -34,7 +34,7 @@ const useCreateEvent = () => {
     },
     onSuccess: async (data) => {
       toast.success(data.message || "Create Event successful");
-      // router.push(`/event/${data.eventId}`);
+      router.push(`/organization/create-event/step2?eventId=${data.data.id}`);
     },
     onError: (error: AxiosError<{ message: string; code: number }>) => {
       toast.error(error.response?.data.message || "Something went wrong");

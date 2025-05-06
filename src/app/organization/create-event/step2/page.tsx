@@ -17,7 +17,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { CheckboxItem } from "@radix-ui/react-dropdown-menu";
-import { use, useState } from "react";
+import { useState } from "react";
 import userCreateTicket from "@/hooks/api/events/useCreateTicket";
 import {
   Dialog,
@@ -47,8 +47,7 @@ export default function CreateTicketPage() {
 
   const router = useRouter();
   const { eventid } = useParams();
-  //comment seharusnya sesuai dengan eventId
-  const { mutateAsync: createTicket, isPending } = userCreateTicket("");
+  const { mutateAsync: createTicket, isPending } = userCreateTicket(eventid);
 
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -74,31 +73,28 @@ export default function CreateTicketPage() {
       setIsDialogOpen(false);
       formik.resetForm();
 
-
-      //ini data yang belum kelar
-      // const result = await createTicket(values);
-      // const eventId = result.data.id; // Assuming the API returns the created ticket ID
-      router.push(`/organization/create-event/step3/${eventid}`);
+      const result = await createTicket(values);
+      const eventId = result.data.id;
+      router.push(`/organization/create-event/step3`);
     },
   });
 
-  // Handle dialog close
   const handleEdit = (index: number) => {
     const ticket = tickets[index];
     formik.setValues(ticket);
     setEditIndex(index);
     setIsDialogOpen(true);
   };
+
   const handleDelete = (index: number) => {
     setTickets((prev) => prev.filter((_, i) => i !== index));
   };
 
-  //   const handleSubmitAll = async () => {
-  //     for (const ticket of tickets) {
-  //       await createTicket({ ...ticket, eventId: eventid });
-  //     }
-  //     router.push(`/organization/create-event/step3/${eventid}`);
-  //   };
+  const handleSaveAll = async () => {
+
+    // await saveAllTickets(tickets);
+    router.push("/organization/create-event/step3");
+  };
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
@@ -179,7 +175,6 @@ export default function CreateTicketPage() {
             </Dialog>
           </div>
 
-          {/* Ticket Table */}
           <div className="rounded-md border">
             <Table>
               <TableHeader>
@@ -225,7 +220,7 @@ export default function CreateTicketPage() {
                 ) : (
                   <TableRow>
                     <TableCell
-                      colSpan={5}
+                      colSpan={4}
                       className="text-muted-foreground text-center"
                     >
                       No tickets yet. Click "Add Ticket" to create one.
@@ -239,9 +234,8 @@ export default function CreateTicketPage() {
           {tickets.length > 0 && (
             <div className="flex justify-end pt-4">
               <Button
-                disabled={isPending || formik.isValid}
-                type="submit"
-                // onClick={handleSubmitAll}
+                disabled={isPending}
+                onClick={handleSaveAll}
                 className="bg-green-600 hover:bg-green-700"
               >
                 Save & Continue

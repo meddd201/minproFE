@@ -102,7 +102,8 @@ export default function RegisterForm({
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                   />
-                  <button
+                  <Button
+                    variant={"ghost"}
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute inset-y-0 right-0 flex items-center pr-3 text-sm"
@@ -112,7 +113,7 @@ export default function RegisterForm({
                     ) : (
                       <Eye className="h-4 w-4" />
                     )}
-                  </button>
+                  </Button>
                 </div>
                 {!!formik.touched.password && !!formik.errors.password && (
                   <span className="text-destructive text-sm md:absolute md:top-full">
@@ -133,7 +134,8 @@ export default function RegisterForm({
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                   />
-                  <button
+                  <Button
+                  variant={"ghost"}
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     className="absolute inset-y-0 right-0 flex items-center pr-3 text-sm"
@@ -143,7 +145,7 @@ export default function RegisterForm({
                     ) : (
                       <Eye className="h-4 w-4" />
                     )}
-                  </button>
+                  </Button>
                 </div>
                 {!!formik.touched.confirmPassword &&
                   !!formik.errors.confirmPassword && (

@@ -1,7 +1,17 @@
 "use client";
 import { format } from "date-fns";
 
+import Loading from "@/components/loading/loading";
 import { PaginationComponent } from "@/components/pagination";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -11,26 +21,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import useGetOrgAttEvents from "@/hooks/api/events/useGetOrgAttEvents";
+import useGetOrgDetailEvent from "@/hooks/api/events/useGetOrgDetailEvent";
+import { Label } from "@radix-ui/react-dropdown-menu";
 import { FC, useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
-import { Input } from "@/components/ui/input";
-import { Label } from "@radix-ui/react-dropdown-menu";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import useGetOrgDetailEvent from "@/hooks/api/events/useGetOrgDetailEvent";
-import Loading from "@/components/loading/loading";
 
 interface AtendeeListProps {
   eventId: string;
 }
 
-const AtendeeList: FC<AtendeeListProps> = ({ eventId }) => {
+const AttendeesPage: FC<AtendeeListProps> = ({ eventId }) => {
   const [searchUser, setSearch] = useState("");
   const [debounceSearchUser] = useDebounce(searchUser, 500);
   const [searchTicket, setSearchTicket] = useState("");
@@ -43,11 +43,7 @@ const AtendeeList: FC<AtendeeListProps> = ({ eventId }) => {
     take: take,
     sortOrder: "desc",
   });
-  const {
-    data: eventData,
-    isPending: eventPending,
-    error: eventError,
-  } = useGetOrgDetailEvent(eventId);
+  const { data: eventData } = useGetOrgDetailEvent(eventId);
 
   useEffect(() => {
     setPage(1);
@@ -127,9 +123,9 @@ const AtendeeList: FC<AtendeeListProps> = ({ eventId }) => {
                 {data?.data.map((atendee) => (
                   <TableRow key={atendee.id}>
                     <TableCell className="font-medium break-words whitespace-pre-wrap">
-                      {atendee.usersEvents.users.username}
+                      {atendee.usersEvent.user.username}
                     </TableCell>
-                    <TableCell>{atendee.tickets.name}</TableCell>
+                    <TableCell>{atendee.ticket.name}</TableCell>
                     <TableCell>
                       {format(new Date(atendee.updatedAt), "yyyy-MM-dd HH:mm")}
                     </TableCell>
@@ -152,4 +148,4 @@ const AtendeeList: FC<AtendeeListProps> = ({ eventId }) => {
   );
 };
 
-export default AtendeeList;
+export default AttendeesPage;

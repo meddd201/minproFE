@@ -1,9 +1,8 @@
-import React from 'react'
+import OrganizerAllTransactionsPage from "@/features/organization/transaction";
+import React from "react";
 
-const page = () => {
-  return (
-    <div>page</div>
-  )
-}
+const OrganizerAllTransactions = () => {
+  return <OrganizerAllTransactionsPage />;
+};
 
-export default page
+export default OrganizerAllTransactions;

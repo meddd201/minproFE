@@ -6,11 +6,11 @@ export interface Attendee {
     createdAt: string;
     updatedAt: string;
     deletedAt: string | null;
-    tickets: {
+    ticket: {
         name: string;
     };
-    usersEvents: {
-        users: {
+    usersEvent: {
+        user: {
             id: string;
             username: string;
             email: string;

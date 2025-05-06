@@ -62,7 +62,9 @@ const PofilePicture = () => {
               >
                 Profile
               </DropdownMenuItem>
-              <DropdownMenuItem>My Ticket</DropdownMenuItem>
+              <DropdownMenuItem  onClick={() => {
+                  router.push("/my-ticket");
+                }}>My Ticket</DropdownMenuItem>
               <DropdownMenuItem>Transaction</DropdownMenuItem>
             </DropdownMenuGroup>
             {user?.role === "ADMIN" && (

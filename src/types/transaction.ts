@@ -28,13 +28,7 @@ export interface TransactionDetail {
   id: string;
   reciptNumber: string;
   userId: string;
-  status:
-    | "WAITING_FOR_PAYMENT"
-    | "WAITING_FOR_ADMIN_CONFIRMATION"
-    | "DONE"
-    | "REJECTED"
-    | "EXPIRED"
-    | "CANCELED";
+  status: TransactionStatus;
   pointsUsed: number;
   pointsExpiredAt: Date;
   totalDecreaseDiscount: number;
@@ -52,4 +46,13 @@ export interface TransactionDetail {
   cuponTransactions?: CuponTransaction[];
   voucherTransaction?: VoucherTransaction[];
   transactionTicket?: TransactionTicket[];
+}
+
+export enum TransactionStatus {
+  WAITING_FOR_PAYMENT = "WAITING_FOR_PAYMENT",
+  WAITING_FOR_ADMIN_CONFIRMATION = "WAITING_FOR_ADMIN_CONFIRMATION",
+  DONE = "DONE",
+  REJECTED = "REJECTED",
+  EXPIRED = "EXPIRED",
+  CANCELED = "CANCELED",
 }

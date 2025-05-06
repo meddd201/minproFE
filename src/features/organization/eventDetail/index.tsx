@@ -23,6 +23,8 @@ import {
   MapPin,
 } from "lucide-react";
 import { formatLocation } from "@/utils/formatinLocation";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 interface OrganizerEventDetailPageProps {
   eventId: string;
@@ -149,6 +151,11 @@ const OrganizerEventDetailPage: FC<OrganizerEventDetailPageProps> = ({
             </TableBody>
           </Table>
         </div>
+      </section>
+      <section className="item-right relative container mx-auto mb-8 flex justify-end gap-4">
+        <Link href={`/organization/create-event/step1/${eventId}`}>
+          <Button>Edit Event</Button>
+        </Link>
       </section>
     </main>
   );

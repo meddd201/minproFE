@@ -10,17 +10,19 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DEFAULT_EMPTY_PROFILE_IMAGE } from "@/config/env";
-import { ShoppingCart } from "lucide-react";
+import useGetUserPoint from "@/hooks/api/profile/useGetUserPoint";
+import { CircleDollarSign, Coins, CoinsIcon, ShoppingCart } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { format } from "date-fns";
+import PointUser from "./point";
 
 const PofilePicture = () => {
   const router = useRouter();
   const session = useSession();
   const user = session?.data?.user;
-
   const profileSrc =
     user?.profilePict === "null" || !user?.profilePict
       ? DEFAULT_EMPTY_PROFILE_IMAGE
@@ -33,12 +35,7 @@ const PofilePicture = () => {
   if (user) {
     return (
       <div className="hidden items-center gap-4 text-black hover:cursor-pointer md:flex">
-        <Link
-          href="/cart"
-          className="aspect-square h-full text-black hover:scale-110 hover:cursor-pointer"
-        >
-          <ShoppingCart size={35} />
-        </Link>
+        <PointUser />
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -62,9 +59,13 @@ const PofilePicture = () => {
               >
                 Profile
               </DropdownMenuItem>
-              <DropdownMenuItem  onClick={() => {
+              <DropdownMenuItem
+                onClick={() => {
                   router.push("/my-ticket");
-                }}>My Ticket</DropdownMenuItem>
+                }}
+              >
+                My Ticket
+              </DropdownMenuItem>
               <DropdownMenuItem>Transaction</DropdownMenuItem>
             </DropdownMenuGroup>
             {user?.role === "ADMIN" && (

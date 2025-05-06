@@ -1,23 +1,20 @@
-"use client";
 import useAxios from "@/hooks/useAxios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
 
-const useCreateTicket = (eventId: string) => {
-  const queryClient = useQueryClient();
+const useDeleteTicket = (eventId:string) => {
   const { axiosInstance } = useAxios();
+  const queryClient = useQueryClient();
+
   return useMutation({
-    mutationFn: async (payload: {
-      name: string;
-      price: number;
-      amount: number;
-    }) => {
-      const { data } = await axiosInstance.post(`/tickets/${eventId}`, payload);
+    mutationFn: async (ticketid: string) => {
+      const { data } = await axiosInstance.delete(`/tickets/${ticketid}`);
+
       return data;
     },
     onSuccess: async (data) => {
-      toast.success(data.message || "Create Ticket successful");
+      toast.success(data.message || "ticket deleted successfully");
       await queryClient.refetchQueries({
         queryKey: ["organizerEvent", eventId],
       });
@@ -28,4 +25,4 @@ const useCreateTicket = (eventId: string) => {
   });
 };
 
-export default useCreateTicket;
+export default useDeleteTicket;

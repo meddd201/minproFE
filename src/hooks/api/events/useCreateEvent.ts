@@ -49,7 +49,6 @@ const useCreateEvent = () => {
       return data;
     },
     onSuccess: async (data) => {
-      toast.success("Create or Update Event successful");
       await queryClient.invalidateQueries({
         queryKey: ["organizerEvent", data.data.id],
       });

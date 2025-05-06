@@ -4,15 +4,6 @@ import Loading from "@/components/loading/loading";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import {
   Table,
   TableBody,
   TableCell,
@@ -21,11 +12,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import useGetOrgDetailEvent from "@/hooks/api/events/useGetOrgDetailEvent";
-import { redirect } from "next/navigation";
-import { FC, useState } from "react";
-import TicketDialog from "./components/StepTwoDialog";
+import useDeleteTicket from "@/hooks/api/ticket/useDeleteTicket";
 import formatRupiah from "@/utils/formatingRupiah";
-import Link from "next/link";
+import { Pencil, Trash2 } from "lucide-react";
+import { redirect, useRouter } from "next/navigation";
+import { FC, useState } from "react";
+import TicketDialogCreate from "./components/StepTwoDialogCreate";
+import TicketDialogEdit from "./components/StepTwoDialogEdit";
+import { Ticket } from "@/types/ticket";
 
 interface StepTwoIDPageProps {
   eventid: string;
@@ -33,29 +27,37 @@ interface StepTwoIDPageProps {
 
 const StepTwoIDPage: FC<StepTwoIDPageProps> = ({ eventid }) => {
   const { data: NewData, isPending, error } = useGetOrgDetailEvent(eventid);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { mutateAsync: deleteTicket, isPending: pendingDelete } =
+    useDeleteTicket(eventid);
 
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDialogEditOpen, setIsDialogEditOpen] = useState(false);
+  const [ticketToEdit, setTicketToEdit] = useState<Ticket | null>();
+  const router = useRouter();
   if (isPending)
     return <Loading className="container mx-auto h-[100vh] items-center" />;
 
   if (error) return redirect("/organization");
 
+  const handlecloseEditDialog = () => {
+    setIsDialogEditOpen(false);
+    setTicketToEdit(null);
+  };
+
   return (
     <section className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
       <div className="mb-8 text-center">
-        <h1 className="mb-6 text-2xl font-bold">Create Tickets for Event</h1>
-        <p className="text-muted-foreground mb-4">Event ID: {eventid}</p>
+        <h1 className="mb-6 text-2xl font-bold">Adjust Tickets for Event</h1>
+        <div className="gap">
+          <p className="text-muted-foreground text-xl">{NewData.data.name}</p>
+          <p className="text-muted-foreground"> Event ID: {eventid}</p>
+        </div>
       </div>
       <Card>
         <CardContent className="space-y-6 pt-6">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-semibold">Ticket Types</h2>
-            <Button
-              className="bg-purple-600 hover:bg-purple-700"
-              onClick={() => setIsDialogOpen(true)}
-            >
-              Add Ticket
-            </Button>
+            <Button onClick={() => setIsDialogOpen(true)}>Add Ticket</Button>
           </div>
 
           <div className="rounded-md border">
@@ -65,7 +67,8 @@ const StepTwoIDPage: FC<StepTwoIDPageProps> = ({ eventid }) => {
                   <TableHead>Name</TableHead>
                   <TableHead>Price</TableHead>
                   <TableHead>Qty</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+                  <TableHead>Buyed</TableHead>
+                  <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -79,23 +82,28 @@ const StepTwoIDPage: FC<StepTwoIDPageProps> = ({ eventid }) => {
                           : `${formatRupiah(ticket.price)}`}
                       </TableCell>
                       <TableCell>{ticket.amount}</TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end gap-2">
-                          {/* <Button
+                      <TableCell>{ticket.buyed}</TableCell>
+                      <TableCell>
+                        <div className="flex gap-2">
+                          <Button
+                            onClick={() => {
+                              setTicketToEdit(ticket);
+                              setIsDialogEditOpen(true);
+                            }}
                             size="sm"
                             variant="ghost"
-                            onClick={() => handleEdit(index)}
                           >
                             <Pencil className="h-4 w-4" />
-                          </Button> */}
-                          {/* <Button
+                          </Button>
+                          <Button
+                            onClick={() => deleteTicket(ticket.id)}
+                            disabled={ticket.buyed > 0}
                             size="sm"
                             variant="ghost"
                             className="text-red-500"
-                            onClick={() => handleDelete(index)}
                           >
                             <Trash2 className="h-4 w-4" />
-                          </Button> */}
+                          </Button>
                         </div>
                       </TableCell>
                     </TableRow>
@@ -114,27 +122,60 @@ const StepTwoIDPage: FC<StepTwoIDPageProps> = ({ eventid }) => {
             </Table>
           </div>
 
-          {NewData.data.tickets && NewData.data.tickets.length > 0 && (
-            <Link
-              href={`/organization/step3/${eventid}`}
-              className="flex justify-end pt-4"
+          <div className="flex items-center justify-between pt-4">
+            <Button
+              onClick={() =>
+                router.push(`/organization/create-event/step1/${eventid}`)
+              }
+              disabled={isPending || pendingDelete}
             >
+              Back
+            </Button>
+            <div className="flex gap-2">
               <Button
-                disabled={isPending || NewData.data.tickets.length < 1}
-                className="bg-green-600 hover:bg-green-700"
+                variant={"secondary"}
+                onClick={() =>
+                  NewData.data.status === "DRAFT"
+                    ? router.push(`/organization/events`)
+                    : router.push(`/organization/events/${eventid}`)
+                }
+                disabled={isPending || pendingDelete}
               >
-                Save & Continue
+                Save Change
               </Button>
-            </Link>
-          )}
+
+              {NewData.data.tickets && NewData.data.tickets.length > 0 && (
+                <Button
+                  onClick={() =>
+                    router.push(`/organization/create-event/step3/${eventid}`)
+                  }
+                  disabled={
+                    pendingDelete ||
+                    isPending ||
+                    NewData.data.tickets.length < 1
+                  }
+                >
+                  Next
+                </Button>
+              )}
+            </div>
+          </div>
         </CardContent>
       </Card>
 
-      <TicketDialog
+      <TicketDialogCreate
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
         eventId={eventid}
       />
+      {ticketToEdit && (
+        <TicketDialogEdit
+          isOpen={isDialogEditOpen}
+          onClose={handlecloseEditDialog}
+          eventId={eventid}
+          ticketData={ticketToEdit as Ticket}
+        />
+      )}
     </section>
   );
 };

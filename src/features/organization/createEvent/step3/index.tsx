@@ -12,47 +12,57 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import useGetOrgDetailEvent from "@/hooks/api/events/useGetOrgDetailEvent";
+import useDeleteVoucher from "@/hooks/api/voucher/useDeleteVoucher";
+import { EventVoucher } from "@/types/eventsVoucher";
 import formatRupiah from "@/utils/formatingRupiah";
-import { log } from "console";
-import Link from "next/link";
-import { redirect } from "next/navigation";
-import React, { FC, useState } from "react";
-import VoucherDialog from "./components/StepThreeDialog";
 import { format } from "date-fns";
+import { Pencil, Trash2 } from "lucide-react";
+import { redirect, useRouter } from "next/navigation";
+import { FC, useState } from "react";
+import CreateVoucherDialog from "./components/StepThreeCreateDialog";
+import EditVoucherDialog from "./components/StepThreeEditDialog";
+import usePublish from "@/hooks/api/events/usePublish";
 interface StepThreePageProps {
   eventId: string;
 }
 
 const StepThreePage: FC<StepThreePageProps> = ({ eventId }) => {
-  const { data: NewVoucher, isPending, error } = useGetOrgDetailEvent(eventId);
+  const { data: NewData, isPending, error } = useGetOrgDetailEvent(eventId);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { mutateAsync: deleteVoucher, isPending: pendingDelete } =
+    useDeleteVoucher(eventId);
+  const { mutateAsync: publishEvent, isPending: pendingPublish } =
+    usePublish(eventId);
+  const router = useRouter();
 
-  const handleSubmit = () => {
-    console.log("Voucher added successfully");
-    setIsDialogOpen(false);
-  };
-
+  const [isDialogEditOpen, setIsDialogEditOpen] = useState(false);
+  const [voucherToEdit, setVoucherToEdit] = useState<EventVoucher | null>();
   if (isPending)
     return <Loading className="container mx-auto h-[100vh] items-center" />;
 
   if (error) return redirect("/organization");
+
+  const handlecloseEditDialog = () => {
+    setIsDialogEditOpen(false);
+    setVoucherToEdit(null);
+  };
+
   return (
     <section className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
-      <div className="text center mb-8">
-        <h1 className="mb-6 text-2xl font-bold"> Create Voucher for Event</h1>
-        <p className="text-muted-foreground mb-4"> Event ID: {eventId}</p>
+      <div className="mb-8 text-center">
+        <h1 className="mb-6 text-2xl font-bold"> Adjust Voucher for Event</h1>
+
+        <div className="gap">
+          <p className="text-muted-foreground text-xl">{NewData.data.name}</p>
+          <p className="text-muted-foreground"> Event ID: {eventId}</p>
+        </div>
       </div>
 
       <Card>
         <CardContent className="space-y-6 pt-6">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-semibold">Voucher Types</h2>
-            <Button
-              className="bg-purple-600 hover:bg-purple-700"
-              onClick={() => setIsDialogOpen(true)}
-            >
-              Add Voucher
-            </Button>
+            <Button onClick={() => setIsDialogOpen(true)}>Add Voucher</Button>
           </div>
 
           <div className="rounded-md border">
@@ -62,14 +72,15 @@ const StepThreePage: FC<StepThreePageProps> = ({ eventId }) => {
                   <TableHead>Name</TableHead>
                   <TableHead>Amount Discount</TableHead>
                   <TableHead>Qty</TableHead>
+                  <TableHead>Used</TableHead>
                   <TableHead>Start Date</TableHead>
                   <TableHead>End Date</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {NewVoucher.data!.eventVoucher!.length > 0 ? (
-                  NewVoucher.data!.eventVoucher!.map((voucher, index) => (
+                {NewData.data!.eventVoucher!.length > 0 ? (
+                  NewData.data!.eventVoucher!.map((voucher, index) => (
                     <TableRow key={index}>
                       <TableCell>{voucher.name}</TableCell>
                       <TableCell>
@@ -78,6 +89,7 @@ const StepThreePage: FC<StepThreePageProps> = ({ eventId }) => {
                           : `${formatRupiah(voucher.amountDiscount)}`}
                       </TableCell>
                       <TableCell>{voucher.quota}</TableCell>
+                      <TableCell>{voucher.used}</TableCell>
                       <TableCell>
                         {format(voucher.startDate, "d MMMM yyyy")}
                       </TableCell>
@@ -86,21 +98,25 @@ const StepThreePage: FC<StepThreePageProps> = ({ eventId }) => {
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
-                          {/* <Button
+                          <Button
+                            onClick={() => {
+                              setVoucherToEdit(voucher);
+                              setIsDialogEditOpen(true);
+                            }}
                             size="sm"
                             variant="ghost"
-                            onClick={() => handleEdit(index)}
                           >
                             <Pencil className="h-4 w-4" />
-                          </Button> */}
-                          {/* <Button
+                          </Button>
+                          <Button
+                            disabled={pendingDelete || voucher.used > 0}
+                            onClick={() => deleteVoucher(voucher.id)}
                             size="sm"
                             variant="ghost"
                             className="text-red-500"
-                            onClick={() => handleDelete(index)}
                           >
                             <Trash2 className="h-4 w-4" />
-                          </Button> */}
+                          </Button>
                         </div>
                       </TableCell>
                     </TableRow>
@@ -119,32 +135,57 @@ const StepThreePage: FC<StepThreePageProps> = ({ eventId }) => {
             </Table>
           </div>
 
-          {NewVoucher.data.eventVoucher &&
-            NewVoucher.data.eventVoucher.length > 0 && (
-              <Link
-                href={`/organization/step3/${eventId}`} //ini seharusnya langsung publishh
-                className="flex justify-end pt-4"
-              >
+          <div className="flex justify-between">
+            <Button
+              disabled={isPending || pendingDelete || pendingPublish}
+              onClick={() =>
+                router.push(`/organization/create-event/step2/${eventId}`)
+              }
+            >
+              Back
+            </Button>
+            {NewData.data.status === "DRAFT" ? (
+              <div className="flex gap-2">
                 <Button
-                  disabled={
-                    isPending || NewVoucher.data.eventVoucher.length < 1
-                  }
-                  // onClick={handleSaveAll}
-                  className="bg-green-600 hover:bg-green-700"
+                  variant={"secondary"}
+                  disabled={isPending || pendingDelete || pendingPublish}
+                  onClick={() => router.push(`/organization/events`)}
                 >
-                  Save & Publish
+                  Save Change
                 </Button>
-              </Link>
+
+                <Button
+                  disabled={isPending || pendingDelete || pendingPublish}
+                  onClick={() => publishEvent()}
+                >
+                  Publish
+                </Button>
+              </div>
+            ) : (
+              <Button
+                disabled={isPending || pendingDelete}
+                onClick={() => router.push(`/organization/events/${eventId}`)}
+              >
+                Save Change
+              </Button>
             )}
+          </div>
         </CardContent>
       </Card>
 
-      <VoucherDialog
+      <CreateVoucherDialog
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
-        onSubmit={handleSubmit}
         eventId={eventId}
       />
+      {voucherToEdit && (
+        <EditVoucherDialog
+          isOpen={isDialogEditOpen}
+          onClose={handlecloseEditDialog}
+          eventId={eventId}
+          voucherData={voucherToEdit}
+        />
+      )}
     </section>
   );
 };

@@ -12,9 +12,8 @@ const useCreateVoucher = (eventId: string) => {
       name: string;
       quota: number;
       amountDiscount: number;
-      startDate: string;
-      endDate: string;
-      used: number;
+      startDate: Date | string;
+      endDate: Date | string;
     }) => {
       const { data } = await axiosInstance.post(
         `/vouchers/${eventId}`,

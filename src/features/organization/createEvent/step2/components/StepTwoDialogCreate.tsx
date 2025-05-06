@@ -1,52 +1,47 @@
-import { FC } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useFormik } from "formik";
-import * as Yup from "yup";
 import useCreateTicket from "@/hooks/api/events/useCreateTicket";
-
-export type Ticket = {
-  name: string;
-  price: number;
-  amount: number;
-};
+import { useFormik } from "formik";
+import { FC } from "react";
+import * as Yup from "yup";
 
 interface TicketDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  ticketData?: Ticket;
   eventId: string;
 }
 
-const validationSchema = Yup.object({
-  name: Yup.string().min(3, "At least 3 characters").required("Required"),
+const CreateTicketValidationSchema = Yup.object({
+  name: Yup.string()
+    .min(3, "At least 3 characters")
+    .max(20, "ticket name too long")
+    .matches(/^[a-zA-Z0-9 ]*$/, "Only alphanumeric characters are allowed")
+    .required("Required"),
   price: Yup.number().min(0, "Must be positive").required("Required"),
   amount: Yup.number().min(1, "At least 1").required("Required"),
 });
 
-const TicketDialog: FC<TicketDialogProps> = ({
+const TicketDialogCreate: FC<TicketDialogProps> = ({
   isOpen,
   onClose,
-  ticketData,
   eventId,
 }) => {
   const { mutateAsync: createTicket, isPending } = useCreateTicket(eventId);
-
   const formik = useFormik({
     initialValues: {
-      name: ticketData?.name || "",
-      price: ticketData?.price || 0,
-      amount: ticketData?.amount || 1,
+      name: "",
+      price: 0,
+      amount: 1,
     },
-    validationSchema: validationSchema,
+    validationSchema: CreateTicketValidationSchema,
     onSubmit: async (values) => {
       await createTicket(values);
       formik.resetForm();
@@ -58,11 +53,9 @@ const TicketDialog: FC<TicketDialogProps> = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{ticketData ? "Edit Ticket" : "Add Ticket"}</DialogTitle>
+          <DialogTitle>{"Add Ticket"}</DialogTitle>
           <DialogDescription>
-            {ticketData
-              ? "Update ticket details."
-              : "Create a new ticket type for your event."}
+            Create a new ticket type for your event.
           </DialogDescription>
         </DialogHeader>
 
@@ -115,7 +108,7 @@ const TicketDialog: FC<TicketDialogProps> = ({
               Cancel
             </Button>
             <Button type="submit" disabled={!formik.isValid || isPending}>
-              {isPending ? "Processing..." : ticketData ? "Update" : "Add"}
+              {isPending ? "Processing..." : "Add"}
             </Button>
           </DialogFooter>
         </form>
@@ -124,4 +117,4 @@ const TicketDialog: FC<TicketDialogProps> = ({
   );
 };
 
-export default TicketDialog;
+export default TicketDialogCreate;

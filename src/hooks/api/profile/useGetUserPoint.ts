@@ -2,21 +2,22 @@
 
 import useAxios from "@/hooks/useAxios";
 import { Organizer } from "@/types/organizer";
+import { UserPoint } from "@/types/userPoint";
 import { useQuery } from "@tanstack/react-query";
 
-interface GetOrgProfileResponse {
-  data: Organizer;
+interface GetUserPointResponse {
+  data: UserPoint;
   message: string;
 }
-const useGetOrgProfile = () => {
+const useGetUserPoint = () => {
   const { axiosInstance } = useAxios();
   return useQuery({
-    queryKey: ["organizerprofile"],
+    queryKey: ["userPoint"],
     queryFn: async () => {
       const { data } =
-        await axiosInstance.get<GetOrgProfileResponse>(`profile/organizer`);
+        await axiosInstance.get<GetUserPointResponse>(`transactions/point`);
       return data;
     },
   });
 };
-export default useGetOrgProfile;
+export default useGetUserPoint;

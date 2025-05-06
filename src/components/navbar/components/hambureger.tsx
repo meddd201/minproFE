@@ -6,6 +6,7 @@ import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import PointUser from "./point";
 
 const Hamburger = () => {
   const session = useSession();
@@ -27,12 +28,6 @@ const Hamburger = () => {
 
   return (
     <div className="flex gap-4 text-black md:hidden">
-      <Link
-        href="/cart"
-        className="aspect-square h-full text-black hover:scale-110 hover:cursor-pointer"
-      >
-        <ShoppingCart size={35} />
-      </Link>
       <button
         onClick={toggleMenu}
         className="relative z-20 flex h-8 w-8 flex-col items-center justify-center space-y-1"
@@ -51,7 +46,7 @@ const Hamburger = () => {
       {isOpen && (
         <section
           onClick={toggleMenu}
-          className="fixed mx-auto top-0 right-0 bottom-0 left-0 z-10 container h-full w-full flex-col items-center justify-center space-y-2 bg-white/80 backdrop-blur-sm"
+          className="fixed top-0 right-0 bottom-0 left-0 z-10 container mx-auto h-full w-full flex-col items-center justify-center space-y-2 bg-white/80 backdrop-blur-sm"
         >
           <div className="grid w-full rounded-md bg-white px-[5%] pt-[50px] shadow-md">
             {!!user ? (
@@ -62,6 +57,7 @@ const Hamburger = () => {
                 <p className="text-center text-2xl font-bold text-black">
                   {user?.username}
                 </p>
+                <PointUser />
               </div>
             ) : (
               <div className="grid gap-2 py-4">

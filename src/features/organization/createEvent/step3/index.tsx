@@ -18,7 +18,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import React, { FC, useState } from "react";
 import VoucherDialog from "./components/StepThreeDialog";
-
+import { format } from "date-fns";
 interface StepThreePageProps {
   eventId: string;
 }
@@ -78,8 +78,12 @@ const StepThreePage: FC<StepThreePageProps> = ({ eventId }) => {
                           : `${formatRupiah(voucher.amountDiscount)}`}
                       </TableCell>
                       <TableCell>{voucher.quota}</TableCell>
-                      <TableCell>{voucher.startDate}</TableCell>
-                      <TableCell>{voucher.endDate}</TableCell>
+                      <TableCell>
+                        {format(voucher.startDate, "d MMMM yyyy")}
+                      </TableCell>
+                      <TableCell>
+                        {format(voucher.endDate, "d MMMM yyyy")}
+                      </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
                           {/* <Button

@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import useCreateTicket from "@/hooks/api/events/useCreateTicket";
 import useCreateVoucher from "@/hooks/api/events/useCreateVoucher";
 import { CalendarIcon } from "lucide-react";
 import { start } from "repl";
@@ -46,7 +45,15 @@ const validationSchema = Yup.object({
   amountDiscount: Yup.number().min(0, "Must be positive").required("Required"),
   quota: Yup.number().min(1, "At least 1").required("Required"),
   startDate: Yup.date().required("Required"),
-  endDate: Yup.date().required("Required"),
+  endDate: Yup.date()
+    .required("Required")
+    .test({
+      name: "endDate",
+      message: "End date must be after start date",
+      test: function (value) {
+        return value > this.parent.startDate;
+      },
+    }),
   used: Yup.number().min(0, "Must be positive").required("Required"),
 });
 
@@ -74,7 +81,7 @@ const VoucherDialog: FC<VoucherDialogProps> = ({
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       console.log(values);
-      
+
       await createVoucher(values);
       formik.resetForm();
       onClose();

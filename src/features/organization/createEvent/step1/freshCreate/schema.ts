@@ -2,7 +2,7 @@ import { CATEGORY } from "@/types/category";
 import { Location } from "@/types/Locations";
 import * as Yup from "yup";
 
-export const EditEventStep1validationSchema = Yup.object({
+export const CreateEventStep1validationSchema = Yup.object({
   name: Yup.string()
     .min(5, "Name must be at least 5 characters")
     .required("Name is required")
@@ -27,4 +27,5 @@ export const EditEventStep1validationSchema = Yup.object({
   eventEnd: Yup.date()
     .min(Yup.ref("eventStart"), "End date must be after start date")
     .required("End date is required"),
+  eventPict: Yup.mixed().required("Event picture is required"),
 });

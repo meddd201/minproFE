@@ -1,7 +1,7 @@
 "use client";
 
-import Loading from "@/components/loading/loading";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import useGetOrgDetailEvent from "@/hooks/api/events/useGetOrgDetailEvent";
+import useCreateEvent from "@/hooks/api/events/useCreateEvent";
 import { cn } from "@/lib/utils";
 import { CATEGORY } from "@/types/category";
 import { Location } from "@/types/Locations";
@@ -26,55 +26,37 @@ import { format } from "date-fns";
 import { useFormik } from "formik";
 import { CalendarIcon } from "lucide-react";
 import dynamic from "next/dynamic";
-import Link from "next/link";
-import { redirect } from "next/navigation";
-import { FC, useRef, useState } from "react";
-import { EditEventStep1validationSchema } from "./schema";
-import { Calendar } from "@/components/ui/calendar";
-import { toast } from "sonner";
 import Image from "next/image";
-import useCreateEvent from "@/hooks/api/events/useCreateEvent";
+import Link from "next/link";
+import { useRef, useState } from "react";
+import { toast } from "sonner";
+import { CreateEventStep1validationSchema } from "./schema";
 const TipTapRichTextEditor = dynamic(
   () => import("@/components/TiptapRichTextEditor"),
   { ssr: false },
 );
 
-export interface StepOneIDPageProps {
-  eventid: string;
-}
-const StepOneIDPage: FC<StepOneIDPageProps> = ({ eventid }) => {
+const StepOnePage = () => {
   const { mutateAsync: createEvent, isPending } = useCreateEvent();
 
-  const {
-    data: dataevent,
-    isPending: pendingEvent,
-    error: errorEvent,
-  } = useGetOrgDetailEvent(eventid);
-
   const initialValues = {
-    id: eventid,
-    name: dataevent?.data?.name || "",
-    description: dataevent?.data?.description || "",
-    category: dataevent?.data?.category || "",
-    location: dataevent?.data?.location || "",
-    eventStart: dataevent?.data?.eventStart || "",
-    eventEnd: dataevent?.data?.eventEnd || "",
+    name: "",
+    description: "",
+    category: "",
+    location: "",
+    eventStart: "",
+    eventEnd: "",
     eventPict: null,
   };
 
   const formik = useFormik({
     initialValues: initialValues,
-    validationSchema: EditEventStep1validationSchema,
+    validationSchema: CreateEventStep1validationSchema,
     enableReinitialize: true,
     onSubmit: async (values) => {
       await createEvent(values);
     },
   });
-
-  const backref =
-    dataevent?.data?.status === "DRAFT"
-      ? `/organization/events`
-      : `/organization/events/${eventid}`;
 
   const [selectedImage, setSelectedImage] = useState<string>("");
   const eventPictref = useRef<HTMLInputElement>(null);
@@ -102,13 +84,6 @@ const StepOneIDPage: FC<StepOneIDPageProps> = ({ eventid }) => {
       eventPictref.current.value = "";
     }
   };
-  if (pendingEvent) {
-    return <Loading className="container mx-auto h-[100vh] items-center" />;
-  }
-
-  if (errorEvent) {
-    redirect("/organization");
-  }
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
@@ -123,11 +98,11 @@ const StepOneIDPage: FC<StepOneIDPageProps> = ({ eventid }) => {
           <form onSubmit={formik.handleSubmit} className="space-y-6">
             {/* Event Picture */}
             <label className="block font-medium">Image</label>
-            {(selectedImage || dataevent.data.image) && (
+            {selectedImage && (
               <div className="flex w-full items-center justify-center">
                 <div className="relative h-[200px] w-[200px] overflow-hidden rounded-md border-2 border-dashed border-gray-300">
                   <Image
-                    src={selectedImage ? selectedImage : dataevent.data.image!}
+                    src={selectedImage}
                     alt="eventPict"
                     fill
                     className="object-cover"
@@ -156,7 +131,9 @@ const StepOneIDPage: FC<StepOneIDPageProps> = ({ eventid }) => {
                 </Button>
               )}
             </div>
-
+            {formik.dirty && formik.errors.eventPict && (
+              <p className="text-sm text-red-500">{formik.errors.eventPict}</p>
+            )}
             {/* Event Name */}
             <div>
               <label className="mb-1 block font-medium">Event Name</label>
@@ -340,12 +317,12 @@ const StepOneIDPage: FC<StepOneIDPageProps> = ({ eventid }) => {
 
             {/* Submit Button */}
             <div className="flex justify-between">
-              <Link href={backref}>
+              <Link href={"/organization/events"}>
                 <Button type="button">Back</Button>
               </Link>
 
               <Button
-                disabled={pendingEvent || !formik.isValid || isPending}
+                disabled={!formik.isValid || isPending || !formik.dirty}
                 type="submit"
               >
                 Save and Next
@@ -358,4 +335,4 @@ const StepOneIDPage: FC<StepOneIDPageProps> = ({ eventid }) => {
   );
 };
 
-export default StepOneIDPage;
+export default StepOnePage;

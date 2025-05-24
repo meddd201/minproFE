@@ -14,6 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import Link from "next/link";
 
 interface TicketSelectionProps {
   event: IEvent;
@@ -96,10 +97,12 @@ const TicketSelection: FC<TicketSelectionProps> = ({ event }) => {
               </div>
             </div>
 
+            <Link href="/transaction">
             <Button className="w-full" size="lg">
               <CreditCard className="w-4 h-4 mr-2" />
               Proceed to Payment
             </Button>
+            </Link>
           </>
         )}
       </div>

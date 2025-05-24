@@ -4,13 +4,14 @@ import { ArrowLeft, Calendar, Clock, MapPin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { FC } from "react";
-import { getDetailPageEvent } from "../api/getDetailEventTicket";
 import { format } from "date-fns";
+import { getDetailPageEvent } from "@/hooks/api/events/useGetDetailEventTicket";
 
 interface DetailComponentProps {
   slug: string;
 }
 const DetailComponent: FC<DetailComponentProps> = async ({ slug }) => {
+  console.log(slug);
   
   const data = await getDetailPageEvent(slug);
   const fetchedEvent = data.data;

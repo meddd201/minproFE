@@ -1,4 +1,4 @@
-import { getDetailPageEvent } from "./api/getDetailEventTicket";
+import { getDetailPageEvent } from "@/hooks/api/events/useGetDetailEventTicket";
 import DetailComponent from "./components/detailcomponent";
 import TicketSelection from "./components/ticket-selection";
 

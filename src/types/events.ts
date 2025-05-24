@@ -13,13 +13,16 @@ export interface IEvent {
   status: "DRAFT" | "PUBLISHED";
   eventStart: string;
   eventEnd: string;
-  isFeatured: boolean;
-  isFree: boolean;
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
-  price?: number;
-  rating?: number;
+  organizers?: {
+    id: string;
+    name: string;
+    organizerPicture: string | null;
+  };
+  tickets?: ITicket[];
+  eventVoucher?: [];
 }
 
 export interface Event {
